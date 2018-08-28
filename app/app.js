@@ -1,12 +1,12 @@
-/* NPM Dependencies */
+/* Dependencies */
 const express = require('express');
 const path = require('path');
 
-// Initialise express
-const app = express();
-const PORT = 3000;
+/* Creating and running an express server */
+const app = express(); // Initialise express
+const PORT = 3000; // Specify a network port
 
-// Serve index.html to home URL '/'
+// Respond to the browsers 'get' request by serving index.html to home URL '/'
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'public/index.html'));
 });
