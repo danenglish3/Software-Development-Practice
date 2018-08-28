@@ -1,3 +1,13 @@
 {
-    "extends": "airbnb"
+    "extends": "airbnb",
+    "rules": {
+        "linebreak-style": 0,
+        "no-console": "off",
+        "indent": ["error", 4]
+    },
+    "env": {
+        "mocha": true,
+        "browser": true,
+        "node": true
+    }
 }
