@@ -6,6 +6,7 @@
         "indent": ["error", 4]
     },
     "env": {
+        "mocha": true,
         "browser": true,
         "node": true
     }
