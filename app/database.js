@@ -1,12 +1,17 @@
-    const http = require('express');
-    const mysql = require('mysql');
 
-    var connection = mysql.createConnection({
-        host : 'localhost',
-        user : 'root',
-        password : 'dcjscomp602',
-        database : 'website_user'
-    });
+const http = require('express');
+const mysql = require('mysql');
 
-    connection.connect();
-    connection.query('CREATE TABLE');
+//Creating connection object
+var connection = mysql.createConnection({
+    host : '159.65.11.196',
+    user : 'root',
+    password : 'dcjscomp602',
+    database : 'website_user',
+});
+
+//Establishing connection to database using relevant information
+connection.connect((err) => {
+    if (err) throw err;
+    console.log("Successfully connected to MySQL DB");
+});
