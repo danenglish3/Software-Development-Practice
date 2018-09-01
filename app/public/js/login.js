@@ -11,3 +11,4 @@ function getDetails() {
 }   
 
 loginButton.onClick = getDetails();
+
