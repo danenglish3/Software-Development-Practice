@@ -34,12 +34,12 @@ describe('Home Route', () => {
         // Read file at the specified path into a string (reading synchonously is OK for testing)
         const file = fs.readFileSync(filePath, { encoding: 'utf-8' }, (err, contents) => contents);
         // Render view with EJS
-        const homepage = ejs.render(filePath, {siteName: 'Kiwi Trader'} );
+        const homepage = ejs.render(file, { siteName: 'Kiwi Trader' });
 
         // Respond to supertest's GET request with the file at filePath
         request(router)
             .get('/', (req, res) => {
-                res.render(filePath, {siteName: 'Kiwi Trader'} );
+                res.render(filePath, { siteName: 'Kiwi Trader' });
             })
             // Then compare the contents of the file we read with
             // the file we sent to ensure they are both the same
