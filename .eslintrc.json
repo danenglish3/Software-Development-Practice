@@ -3,7 +3,8 @@
     "rules": {
         "linebreak-style": 0,
         "no-console": "off",
-        "indent": ["error", 4]
+        "indent": ["error", 4],
+        "max-len": ["error", { "code": 120 }]
     },
     "env": {
         "mocha": true,
