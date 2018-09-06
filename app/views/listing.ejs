@@ -5,8 +5,8 @@
     <meta charset="utf-8" />
     <title>Listing</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" type="text/css" media="screen" href="../public/css/main.css" />
-    <script src="../public/js/main.js"></script>
+    <link rel="stylesheet" type="text/css" media="screen" href="/css/main.css" />
+    <script src="/js/main.js"></script>
 </head>
 
 <body>
@@ -32,6 +32,9 @@
         <%= description %>
     </p>
     <h2>Images</h2>
-</body>
 
+    <%for (var image in imageFiles){%>
+        <img src="/temp/uploads/<%= imageFiles[image] %>" alt="" height="100">
+    <%}%>
+</body>
 </html>
