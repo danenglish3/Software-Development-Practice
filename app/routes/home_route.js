@@ -1,5 +1,4 @@
 /* Dependencies */
-const path = require('path');
 const express = require('express');
 
 /* Set up a route to the home page */
@@ -7,7 +6,7 @@ const express = require('express');
 const router = express.Router(); // Get express's router functions
 // Respond to the browsers 'get' request by serving index.html to home URL '/'
 router.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, '../public/index.html'));
+    res.render('index.ejs', { siteName: 'Kiwi Trader' });
 });
 
 // Allow the router object to be used in other js files.

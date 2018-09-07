@@ -4,6 +4,7 @@ const request = require('supertest'); // eslint-disable-line
 const express = require('express');
 const fs = require('fs');
 const path = require('path');
+const ejs = require('ejs');
 
 describe('Home Route', () => {
     let app;
@@ -12,6 +13,14 @@ describe('Home Route', () => {
     // Start the server before running any tests
     before((done) => { // Pass done to tell mocha to wait until done() is called
         app = express(); // Initialise express
+
+        // Set view engine to EJS
+        app.set('view engine', 'ejs');
+        app.set('views', path.join(__dirname, '../views'));
+
+        // Provide Express with middleware
+        app.use(express.static(path.join(__dirname, 'public'))); // Specify the folder which holds static files
+
         server = app.listen(3000, () => { // Start the server on port 3000 while mocha is waiting
             done(); // Tell mocha we are done so it no longer has to wait
         });
@@ -27,14 +36,15 @@ describe('Home Route', () => {
         // Get express's router functions
         const router = express.Router();
         // Get the path to index.html
-        const filePath = path.join(__dirname, '../public/index.html');
         // Read file at the specified path into a string (reading synchonously is OK for testing)
-        const homepage = fs.readFileSync(filePath, { encoding: 'utf-8' }, (err, contents) => contents);
+        const file = fs.readFileSync(path.join(__dirname, '../views/index.ejs'), { encoding: 'utf-8' }, (err, contents) => contents);
+        // Render view with EJS
+        const homepage = ejs.render(file, { siteName: 'Kiwi Trader' });
 
         // Respond to supertest's GET request with the file at filePath
         request(router)
             .get('/', (req, res) => {
-                res.sendFile(filePath);
+                res.render('index.ejs', { siteName: 'Kiwi Trader' });
             })
             // Then compare the contents of the file we read with
             // the file we sent to ensure they are both the same
