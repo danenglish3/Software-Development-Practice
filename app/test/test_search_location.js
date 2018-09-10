@@ -35,14 +35,15 @@ describe('Search Route', () => {
     /* Sample Data */
     const sampleData = [
         {
-            // id: '1',
+            serviceid: '1000',
             location: 'Test',
-            catergory: 'Plumbing',
-            description: 'Aliquam erat volutpat. Duis tincidunt ipsum sit amet libero eleifend pharetra.',
+            category: 'Test',
+            description: 'Test Desc',
         },
     ];
 
-    it('Should return Search as is', (done) => {
+    // Begin test for rendering a search page determined by location
+    it('Should return Search with a Location as is', (done) => {
         // Get express's router functions
         const router = express.Router();
         // Get the path to index.html
@@ -50,12 +51,35 @@ describe('Search Route', () => {
         const file = fs.readFileSync(path.join(__dirname, '../views/search.ejs'),
             { encoding: 'utf-8' }, (err, contents) => contents);
         // Render view with EJS
-        const searchpage = ejs.render(file, { sampleData });
+        const searchpage = ejs.render(file, sampleData[0]);
 
         // Respond to supertest's GET request with the file at filePath
         request(router)
-            .get('/search/Test', (req, res) => {
-                res.render('search.ejs', { sampleData });
+            .get('/search/location/Test', (req, res) => {
+                res.render('search.ejs', res);
+            })
+            // Then compare the contents of the file we read with
+            // the file we sent to ensure they are both the same
+            .expect('Content-Type', 'text/html; charset utf-8')
+            .expect(searchpage);
+        done();
+    });
+
+    // Begin test for rendering a search page determined by category
+    it('Should return Search with a Category as is', (done) => {
+        // Get express's router functions
+        const router = express.Router();
+        // Get the path to index.html
+        // Read file at the specified path into a string (reading synchonously is OK for testing)
+        const file = fs.readFileSync(path.join(__dirname, '../views/search.ejs'),
+            { encoding: 'utf-8' }, (err, contents) => contents);
+        // Render view with EJS
+        const searchpage = ejs.render(file, sampleData[0]);
+
+        // Respond to supertest's GET request with the file at filePath
+        request(router)
+            .get('/search/category/Test', (req, res) => {
+                res.render('search.ejs', res);
             })
             // Then compare the contents of the file we read with
             // the file we sent to ensure they are both the same
