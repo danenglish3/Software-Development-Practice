@@ -32,6 +32,18 @@ describe('Search Route', () => {
         done();
     });
 
+    /* Sample Data */
+    const sampleData = [
+        {
+            id: '1',
+            title: 'Water Heater Repair',
+            author: "Bob's Plumbing",
+            location: 'Test',
+            catergory: 'Plumbing',
+            description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam sit amet iaculis nunc. Aliquam erat volutpat. Duis tincidunt ipsum sit amet libero eleifend pharetra. Integer sem nisi, mattis eget tortor eget, accumsan viverra mi. Quisque lobortis felis est, ut volutpat metus euismod a. Nunc lacinia nec est sit amet viverra. Proin enim nulla, laoreet iaculis enim vitae, interdum vestibulum ligula. Donec at libero id dui dapibus scelerisque sed eget turpis. Cras faucibus ac libero ac malesuada. Cras vulputate neque ut varius mattis. Cras congue velit ac posuere interdum. Praesent rutrum leo ac neque eleifend tincidunt.',
+        },
+    ];
+
     it('Should return Search as is', (done) => {
         // Get express's router functions
         const router = express.Router();
@@ -39,17 +51,17 @@ describe('Search Route', () => {
         // Read file at the specified path into a string (reading synchonously is OK for testing)
         const file = fs.readFileSync(path.join(__dirname, '../views/search.ejs'), { encoding: 'utf-8' }, (err, contents) => contents);
         // Render view with EJS
-        const homepage = ejs.render(file, { siteName: 'Test' });
+        const searchpage = ejs.render(file, { sampleData });
 
         // Respond to supertest's GET request with the file at filePath
         request(router)
-            .get('/', (req, res) => {
-                res.render('search.ejs', { siteName: 'Test' });
+            .get('/search/Test', (req, res) => {
+                res.render('search.ejs', { sampleData });
             })
             // Then compare the contents of the file we read with
             // the file we sent to ensure they are both the same
             .expect('Content-Type', 'text/html; charset utf-8')
-            .expect(homepage);
+            .expect(searchpage);
         done();
     });
 });

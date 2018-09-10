@@ -10,7 +10,24 @@
 </head>
 
 <body>
-    <h1>Welcome to <%= searchName %></h1>
+    <h1><%= title %></h1>
+    <p>
+        <dl>
+            <dt><strong>Location</strong></dt>
+            <dd>
+                <%= location %>
+            </dd>
+            <dt><strong>Catergory</strong></dt>
+            <dd>
+                <%= catergory %>
+            </dd>
+        </dl>
+    </p>
+    <h2>Description</h2>
+    <p>
+        <%= description %>
+    </p>
+    <h2>Images</h2>
 </body>
 
 </html>
