@@ -12,14 +12,14 @@
 <body>
     <h1>New Listing</h1>
     <!--Upon Submitting the form, make a request with the post method to url /new-listing-->
-    <form method="post" action="/new_listing" enctype="multipart/form-data">
+    <form method="post" action="/new_listing" enctype="multipart/form-data" id="newListingForm">
         <label>Title</label>
         <br>
         <input type="text" name="listingTitle">
         <br>
         <label>Description</label>
         <br>
-        <input type="textarea" name="listingDescription">
+        <textarea name="listingDescription" rows="4" cols="50" form="newListingForm"></textarea> 
         <br>
         <label>Location</label>
         <br>
@@ -27,7 +27,7 @@
         <br>
         <label>Catergory</label>
         <br>
-        <input type="text" name="listingCatergory">
+        <input type="text" name="listingCategory">
         <br>
         <label>Images</label>
         <br>

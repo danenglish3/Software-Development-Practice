@@ -12,6 +12,7 @@
 <body>
     <h1><%= title %></h1>
     <p>
+        <em> <%= serviceid %></em>
         <dl>
             <dt><strong>Location</strong></dt>
             <dd>
@@ -21,9 +22,9 @@
             <dd>
                 <%= author %>
             </dd>
-            <dt><strong>Catergory</strong></dt>
+            <dt><strong>Category</strong></dt>
             <dd>
-                <%= catergory %>
+                <%= category %>
             </dd>
         </dl>
     </p>
@@ -34,7 +35,7 @@
     <h2>Images</h2>
 
     <%for (var image in imageFiles){%>
-        <img src="/temp/uploads/<%= imageFiles[image] %>" alt="" height="100">
+        <img src="/temp/<%= imageFiles[image] %>" alt="" height="100">
     <%}%>
 </body>
 </html>
