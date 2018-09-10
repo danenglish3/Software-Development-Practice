@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <title>Listing</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" media="screen" href="main.css" />
+    <script src="main.js"></script>
+</head>
+
+<body>
+    <h1>New Listing</h1>
+    <!--Upon Submitting the form, make a request with the post method to url /new-listing-->
+    <form method="post" action="/new_listing" enctype="multipart/form-data" id="newListingForm">
+        <label>Title</label>
+        <br>
+        <input type="text" name="listingTitle">
+        <br>
+        <label>Description</label>
+        <br>
+        <textarea name="listingDescription" rows="4" cols="50" form="newListingForm"></textarea> 
+        <br>
+        <label>Location</label>
+        <br>
+        <input type="text" name="listingLocation">
+        <br>
+        <label>Catergory</label>
+        <br>
+        <input type="text" name="listingCategory">
+        <br>
+        <label>Images</label>
+        <br>
+        <input type="file" name="listingImages" accept="image/*" multiple>
+        <br>
+        <input type="submit" value="Submit">
+    </form>
+
+</body>
+
+</html>
