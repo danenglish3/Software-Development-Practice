@@ -4,7 +4,12 @@ const connection = require('../database');
 
 const router = express.Router(); // Get express's router functions
 router.get('/search', (req, res) => {
-    res.render('search.ejs', { searchName: 'Test' });
+    const queryService = 'SELECT * FROM website_user.Service';
+    connection.query(queryService, (err, results) => {
+        if (err) throw err;
+
+        console.log(results);
+    });
 });
 
 
@@ -16,7 +21,6 @@ router.get('/search/:location', (req, res) => {
         if (err) throw err;
 
         const listing = {
-            title: results[0].Title, // Use the information from the first query (results) to add the title
             serviceid: results[0].Service_ID,
             location: results[0].Location,
             category: results[0].Category,
@@ -24,6 +28,8 @@ router.get('/search/:location', (req, res) => {
         };
 
         // Now that the listing object is complete, render the HTML using the information from the EJS template
+        console.log(results);
+        console.log(listing);
         res.render('search.ejs', listing);
     });
 });
