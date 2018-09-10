@@ -1,57 +1,108 @@
 /* Dependencies */
-const path = require('path');
 const express = require('express');
+const fs = require('fs');
+const uuid = require('uuid/v4');
+const connection = require('../database');
 
-/* Temporary Sample Data */
-const sampleData = [
-    {
-        id: '1',
-        title: 'Water Heater Repair',
-        author: "Bob's Plumbing",
-        location: 'Auckland',
-        catergory: 'Plumbing',
-        description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam sit amet iaculis nunc. Aliquam erat volutpat. Duis tincidunt ipsum sit amet libero eleifend pharetra. Integer sem nisi, mattis eget tortor eget, accumsan viverra mi. Quisque lobortis felis est, ut volutpat metus euismod a. Nunc lacinia nec est sit amet viverra. Proin enim nulla, laoreet iaculis enim vitae, interdum vestibulum ligula. Donec at libero id dui dapibus scelerisque sed eget turpis. Cras faucibus ac libero ac malesuada. Cras vulputate neque ut varius mattis. Cras congue velit ac posuere interdum. Praesent rutrum leo ac neque eleifend tincidunt.',
-    },
-    {
-        id: '2',
-        title: 'WOF + Servicing',
-        author: "Dave's Auto",
-        location: 'Hamilton',
-        catergory: 'Automotive',
-        description: 'Praesent tristique vulputate sem, eget bibendum sapien commodo non. Vivamus commodo feugiat sem accumsan tempor. In sollicitudin dui eu elit lacinia, in congue ex dictum. Donec felis sem, accumsan eu turpis id, facilisis suscipit sem. Nullam vehicula nisl augue, ac pellentesque ipsum scelerisque a. Nullam a fringilla dolor. Curabitur ex orci, vulputate sit amet fermentum bibendum, bibendum rutrum erat. Ut condimentum viverra hendrerit. Pellentesque in elit mauris. Morbi dapibus metus a nunc finibus tincidunt. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Nulla et quam et ligula vulputate sodales.',
-    },
-    {
-        id: '3',
-        title: 'Yard Design',
-        author: "Sally's Landscaping",
-        location: 'Christchurch',
-        catergory: 'Landscaping',
-        description: 'Nunc venenatis porttitor gravida. Aliquam nibh nunc, dignissim non ipsum nec, rhoncus cursus nulla. Nullam viverra nulla eget massa ullamcorper, ac pellentesque quam feugiat. Integer viverra sapien interdum ligula dapibus, in vehicula ex blandit. Vestibulum ac tincidunt sapien. Nulla rutrum, nunc blandit convallis fringilla, tortor tortor congue ipsum, commodo facilisis mi ex at sapien. Nam rutrum metus magna, at lacinia eros pharetra vitae. Curabitur at molestie justo. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vel imperdiet sapien. Aliquam facilisis quis metus et volutpat.',
-    },
-];
+/* Temporary fs data retrieve/save functions */
+
+// TODO: Implement user
+function getUser() {
+    return '12350';
+}
 
 /* Set up route for listing pages */
 
 const router = express.Router(); // Get express's router functions
-// Respond to the browsers 'get' request by serving listing.ejs to URL '/listing/id'
+// Respond to the browsers 'get' for URL '/listing/id'
 router.get('/listing/:id', (req, res) => {
-    // Return an object defined as 'listing' which has an 'id'
-    // that matches the request parameter 'id' to queryResult
-    const queryResult = sampleData.find(listing => listing.id === req.params.id);
-    // Render the the HTML from the EJS template using the data in the listing object in queryResult
-    res.render(path.join(__dirname, '../views/listing.ejs'), queryResult);
+    // Create a select statement to query the db for a listing using the ':id' in  the '/listing/:id'
+    const queryService = `SELECT * FROM Service WHERE Service_ID='${req.params.id}'`; // Submit the statement
+    connection.query(queryService, (err, results, fields) => {
+        // Once the above query is complete:
+        if (err) throw err;
+        // Create a select statement to query the db for the name of the author using the profile id
+        const queryAuthor = `SELECT Name FROM AccountHolder WHERE Account_ID = ${results[0].Profile_ID}`;
+        connection.query(queryAuthor, (err2, results2, fields2) => { // Sumbit the statement
+            // Once the above query is complete:
+            if (err2) throw err2;
+            // Create a select statement to query the db for the photos
+            const queryImages = `SELECT * FROM Photo WHERE Service_ID = ${results[0].Service_ID}`;
+            connection.query(queryImages, (err3, results3, fields3) => { // Submit statement
+                // Once the above query is complete:
+                // Create a listing object with property names that correspond to the ejs template
+                const listing = {
+                    title: results[0].Title, // Use the information from the first query (results) to add the title
+                    serviceid: results[0].Service_ID,
+                    location: results[0].Location,
+                    author: results2[0].Name, // Use the information from the second query (results2) to add the author
+                    category: results[0].Category,
+                    description: results[0].Description,
+                    imageFiles: [], // Create empty array for holding filenames for the images
+                };
+
+                results3.forEach((element) => { // For each result of the photo query (results3):
+                    const filename = `${uuid()}.${element.Extension}`; // Create a filename
+                    listing.imageFiles.push(filename); // Add filename to array in listing object
+                    // Write the file to the temp directory
+                    fs.writeFile(`app/public/temp/${filename}`, element.Photo_Blob, (err4) => {
+                        if (err4) throw err4;
+                    });
+                });
+                // Now that the listing object is complete, render the HTML using the information from the EJS template
+                res.render('listing.ejs', listing);
+            });
+        });
+    });
 });
 
 /* Set up routes for listing form */
 
-// Respond to the browsers 'get' request by serving listing-form.ejs to URL '/listing/new'
-router.get('/new-listing', (req, res) => {
-    // Render the the HTML from the EJS template
-    res.render(path.join(__dirname, '../views/listing-form.ejs'));
+// Respond to the browsers 'get' request by serving new_listing.ejs to URL '/new_listing'
+router.get('/new_listing', (req, res) => {
+    res.render('new_listing.ejs'); // Render the the HTML from the EJS template
+});
+
+// Respond to the browsers 'post' to URL '/new_listing' request by saving a new listing
+router.post('/new_listing', (req, res) => { // Make sure this URL matches the one in the ejs template in the form
+    const listing = { // Create a listing object corresponding to 'Service' table in db
+        Profile_ID: getUser(),
+        Title: req.body.listingTitle, // Get form data from the body of the post request
+        Description: req.body.listingDescription,
+        Location: req.body.listingLocation,
+        Category: req.body.listingCategory,
+    };
+
+    const insertService = 'INSERT INTO Service SET ?'; // Start insert statement
+    // Complete insert statement within query using listing object
+    connection.query(insertService, listing, (err, results, fields) => {
+        if (err) throw err;
+
+        req.files.forEach((file) => { // Iterate though each image file uploaded in the post request
+            const data = new Buffer.from(file.buffer, 'base64', (err2) => { // Read the encoded data into binary
+                if (err2) throw err2;
+            });
+
+            const image = { // Create image object corresponding to 'Photo' table
+                Photo_Blob: data,
+                Extension: file.originalname.substring(file.originalname.lastIndexOf('.') + 1, file.originalname.length),
+                Service_ID: results.insertId,
+            };
+
+            // Insert images
+            const insertImage = 'INSERT INTO Photo SET ?';
+            connection.query(insertImage, image, (err3, results2, fields) => {
+                if (err3) throw err3;
+            });
+        });
+        res.end(`Saved! to /listing/${results.insertId}`); // Send saved response
+    });
+    // Respond to the request by displaying the new lisitng
+    // res.render('listing.ejs', listing);
 });
 
 // Allow the router object to be used in other js files.
 // In this case we are making the router available as a
-// module so that the route to the home page can be
+// module so that the route to the listing page can be
 // mounted to the express server in app.js
 module.exports = router;
