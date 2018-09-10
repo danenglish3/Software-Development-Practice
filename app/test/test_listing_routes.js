@@ -16,16 +16,13 @@ describe('Listing Routes', () => {
     /* Sample Data */
     const sampleData = [
         {
-            id: '1',
+            serviceid: '1',
             title: 'Water Heater Repair',
             author: "Bob's Plumbing",
             location: 'Auckland',
-            catergory: 'Plumbing',
+            category: 'Plumbing',
             description: 'desc',
-            imageFiles: [
-                '1536205165795-samplepic2.jpg',
-                '1536205165793-samplepic1.jpg',
-            ],
+            imageFiles: [],
         },
     ];
 
@@ -79,30 +76,16 @@ describe('Listing Routes', () => {
         app.post('/new_listing', (req, res) => {
             // Once sample data has been retrieved:
             const listing = { // Create a listing object
-                id: (sampleData.length + 1).toString(), // Create new ID
+                serviceid: (sampleData.length + 1).toString(), // Create new ID
                 title: req.body.listingTitle, // Get form data from the body of the post request
                 author: req.body.listingAuthor,
                 location: req.body.listingLocation,
-                catergory: req.body.listingCatergory,
+                category: req.body.listingCatergory,
                 description: req.body.listingDescription,
                 imageFiles: [], // Create array to store file names of uploaded images
             };
 
-            req.files.forEach((image) => { // Iterate though each image file uploaded in the post request
-                const fileName = `${Date.now()}-${image.originalname}`; // Create a filename
-                const data = new Buffer.from(image.buffer, 'base64', (err) => { // Read the encoded data into binary
-                    if (err) throw err;
-                });
-
-                fs.writeFile(`app/public/temp/uploads/${fileName}`, data, (err) => { // Write encoded data to a file
-                    if (err) throw err;
-                });
-
-                listing.imageFiles.push(fileName); // Add the file name to the listing object
-            });
-
             sampleData.push(listing); // Add the listing to the sample data
-
 
             // Respond to the request by displaying the new lisitng
             newListingPage = ejs.render('listing.ejs', listing);
@@ -116,10 +99,8 @@ describe('Listing Routes', () => {
             .field('listingTitle', 'A title')
             .field('listingAuthor', 'An Author')
             .field('listingLocation', 'A location')
-            .field('listingCatergory', 'A Catergory')
+            .field('listingCatergory', 'A Category')
             .field('listingDescription', 'A Description')
-            .attach('listingImages', `app/public/temp/uploads/${sampleData[0].imageFiles[0]}`)
-            .attach('listingImages', `app/public/temp/uploads/${sampleData[0].imageFiles[1]}`)
             .end((err, res) => {
                 expect(newListingPage);
                 done();
