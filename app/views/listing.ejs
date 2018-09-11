@@ -5,13 +5,14 @@
     <meta charset="utf-8" />
     <title>Listing</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" type="text/css" media="screen" href="../public/css/main.css" />
-    <script src="../public/js/main.js"></script>
+    <link rel="stylesheet" type="text/css" media="screen" href="/css/main.css" />
+    <script src="/js/main.js"></script>
 </head>
 
 <body>
     <h1><%= title %></h1>
     <p>
+        <em> <%= serviceid %></em>
         <dl>
             <dt><strong>Location</strong></dt>
             <dd>
@@ -21,9 +22,9 @@
             <dd>
                 <%= author %>
             </dd>
-            <dt><strong>Catergory</strong></dt>
+            <dt><strong>Category</strong></dt>
             <dd>
-                <%= catergory %>
+                <%= category %>
             </dd>
         </dl>
     </p>
@@ -32,6 +33,9 @@
         <%= description %>
     </p>
     <h2>Images</h2>
-</body>
 
+    <%for (var image in imageFiles){%>
+        <img src="/temp/<%= imageFiles[image] %>" alt="" height="100">
+    <%}%>
+</body>
 </html>
