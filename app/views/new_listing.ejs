@@ -5,8 +5,8 @@
     <meta charset="utf-8" />
     <title>Listing</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" type="text/css" media="screen" href="main.css" />
-    <script src="main.js"></script>
+    <link rel="stylesheet" type="text/css" media="screen" href="/css/main.css" />
+    <script src="/js/main.js"></script>
 </head>
 
 <body>
@@ -15,19 +15,19 @@
     <form method="post" action="/new_listing" enctype="multipart/form-data" id="newListingForm">
         <label>Title</label>
         <br>
-        <input type="text" name="listingTitle">
+        <input type="text" name="listingTitle" required>
         <br>
         <label>Description</label>
         <br>
-        <textarea name="listingDescription" rows="4" cols="50" form="newListingForm"></textarea> 
+        <textarea name="listingDescription" rows="4" cols="50" form="newListingForm" required></textarea> 
         <br>
         <label>Location</label>
         <br>
-        <input type="text" name="listingLocation">
+        <input type="text" name="listingLocation" required>
         <br>
         <label>Catergory</label>
         <br>
-        <input type="text" name="listingCategory">
+        <input type="text" name="listingCategory" required>
         <br>
         <label>Images</label>
         <br>
