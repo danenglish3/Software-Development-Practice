@@ -95,10 +95,98 @@ router.post('/new_listing', (req, res) => { // Make sure this URL matches the on
                 if (err3) throw err3;
             });
         });
-        res.end(`Saved! to /listing/${results.insertId}`); // Send saved response
+        res.end(`Saved /listing/${results.insertId}`); // Send saved response
     });
     // Respond to the request by displaying the new lisitng
     // res.render('listing.ejs', listing);
+});
+
+// Respond to the browsers 'get' for URL '/listing/id/edit'
+router.get('/listing/:id/edit', (req, res) => {
+    // Create a select statement to query the db for a listing using the ':id' in  the '/listing/:id'
+    const queryService = `SELECT * FROM Service WHERE Service_ID='${req.params.id}'`; // Submit the statement
+    connection.query(queryService, (err, results, fields) => {
+        // Once the above query is complete:
+        if (err) throw err;
+        // Create a select statement to query the db for the photos
+        const queryImages = `SELECT * FROM Photo WHERE Service_ID = ${results[0].Service_ID}`;
+        connection.query(queryImages, (err2, results2, fields2) => { // Submit statement
+            // Create a listing object with property names that correspond to the ejs template
+            const listing = {
+                id: results[0].Service_ID,
+                prevTitle: results[0].Title, // Use the information from the first query (results) to add the title
+                prevLocation: results[0].Location,
+                prevCategory: results[0].Category,
+                prevDesc: results[0].Description,
+                prevImages: [],
+                imageFiles: [], // Create empty array for holding filenames for the images
+            };
+
+            results2.forEach((element) => { // For each result of the photo query (results3):
+                const filename = `${uuid()}.${element.Extension}`; // Create a filename
+                listing.imageFiles.push(filename); // Add filename to array in listing object
+                listing.prevImages.push(element.Photo_ID);
+                // Write the file to the temp directory
+                fs.writeFile(`app/public/temp/${filename}`, element.Photo_Blob, (err3) => {
+                    if (err3) throw err3;
+                });
+            });
+            // Now that the listing object is complete, render the HTML using the information from the EJS template
+            res.render('edit_listing.ejs', listing);
+        });
+    });
+});
+
+// Respond to the browsers 'post' request to URL '/new_listing' by saving a new listing
+router.post('/edit_listing', (req, res) => { // Make sure this URL matches the one in the ejs template in the form
+    if (req.body.listingDelete === 'on') {
+        const deleteService = `DELETE FROM Service WHERE Service_ID = ${req.body.listingID}`;
+        connection.query(deleteService, (err, results, fields) => {
+            if (err) throw err;
+            res.end('Deleted Listing!');
+        });
+    } else {
+        const listing = { // Create a listing object corresponding to 'Service' table in db
+            Title: req.body.listingTitle, // Get form data from the body of the post request
+            Description: req.body.listingDescription,
+            Location: req.body.listingLocation,
+            Category: req.body.listingCategory,
+        };
+
+        const updateService = `UPDATE Service SET ? WHERE Service_ID = ${req.body.listingID}`; // Start insert statement
+        // Complete insert statement within query using listing object
+        connection.query(updateService, listing, (err, results, fields) => {
+            if (err) throw err;
+
+            req.body.delete.forEach((element) => {
+                const deleteImage = `DELETE FROM Photo WHERE Photo_ID = ${parseInt(element, 10)}`;
+                connection.query(deleteImage, (err2, results2, fields2) => {
+                    if (err2) throw err2;
+                });
+            });
+
+            req.files.forEach((file) => { // Iterate though each image file uploaded in the post request
+                const data = new Buffer.from(file.buffer, 'base64', (err2) => { // Read the encoded data into binary
+                    if (err2) throw err2;
+                });
+
+                const image = { // Create image object corresponding to 'Photo' table
+                    Photo_Blob: data,
+                    Extension: file.originalname.substring(file.originalname.lastIndexOf('.') + 1, file.originalname.length),
+                    Service_ID: results.insertId,
+                };
+
+                // Insert images
+                const insertImage = 'INSERT INTO Photo SET ?';
+                connection.query(insertImage, image, (err2, results2, fields) => {
+                    if (err2) throw err2;
+                });
+            });
+            res.end(`Saved /listing/${results.insertId}`); // Send saved response
+        });
+    // Respond to the request by displaying the new lisitng
+    // res.render('listing.ejs', listing);
+    }
 });
 
 // Allow the router object to be used in other js files.
