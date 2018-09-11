@@ -18,7 +18,7 @@ const router = express.Router(); // Get express's router functions
 
 // Search by just a location
 router.get('/search/location/:Location', (req, res) => {
-    let listingResults = [];
+    const listingResults = [];
     let count = 0;
     // Create a select statement to query the db for a singleListing using the ':id' in  the '/singleListing/:id'
     const queryService = `SELECT * FROM website_user.Service \
@@ -49,7 +49,7 @@ router.get('/search/location/:Location', (req, res) => {
                     const queryPhotos = `SELECT * FROM Photo WHERE Service_ID = ${service.Service_ID}`;
                     connection.query(queryPhotos, (err4, results4) => {
                     // Create a singleListing object that holds the information required
-                        let singleListing = {
+                        const singleListing = {
                             serviceid: service.Service_ID,
                             name: results3[0].Name, // Selected in step 3
                             location: service.Location,
