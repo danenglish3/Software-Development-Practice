@@ -10,31 +10,22 @@
 </head>
 
 <body>
-    <p>
-        <dl>
-            <dt><h1><%= name %></h1></dt>      
-            <dd><%= serviceid %></dd>          
-        </dl>
-    </p>
+    <h1>MULTIPLE LISTINGS</h1>
 
-
-    <p>
-        <dl>
-            <dt><strong>Location</strong></dt>
-            <dd>
-                <%= location %>
-            </dd>
-            <dt><strong>Catergory</strong></dt>
-            <dd>
-                <%= category %>
-            </dd>
-        </dl>
-    </p>
-    <h2>Description</h2>
-    <p>
-        <%= description %>
-    </p>
-    <h2>Images</h2>
+    <table>
+            <% for(var i=0; i < listingResults.length; i++) { %>
+               <tr>
+                 <td><%= listingResults[i].singleListing.name %></td>
+                 <td><%= listingResults[i].singleListing.serviceID %></td>
+                 <td><%= listingResults[i].singleListing.category %></td>
+                 <td><%= listingResults[i].singleListing.location %></td>
+                 <td><%= listingResults[i].singleListing.description %></td>
+                 <td><%for (var image in listingResults[i].singleListing.imageFiles){%>
+                        <img src="/temp/<%= listingResults[i].singleListing.imageFiles[image] %>" alt="" height="100">
+                    <%}%></td>
+               </tr>
+            <% } %>
+    </table>
 </body>
 
 </html>

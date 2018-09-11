@@ -36,9 +36,11 @@ describe('Search Route', () => {
     const sampleData = [
         {
             serviceid: '1000',
+            name: 'Daniel',
             location: 'Test',
             category: 'Test',
             description: 'Test Desc',
+            imageFiles: [],
         },
     ];
 
