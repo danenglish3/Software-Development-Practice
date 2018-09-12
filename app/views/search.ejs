@@ -10,18 +10,34 @@
 </head>
 
 <body>
-    <h1>MULTIPLE LISTINGS</h1>
+        <h1>Search Page</h1>
+    <!--Upon Submitting the form, make a request with the post method to url /new-listing-->
+    <form method="post" action="/search" enctype="multipart/form-data" id="newSearchRequest">
+        <label>Keyword Search</label>
+        <br>
+        <input type="text" name="searchKeywords">
+        <br>
+        <label>Location</label>
+        <br>
+        <input type="text" name="searchLocation">
+        <br>
+        <label>Catergory</label>
+        <br>
+        <input type="text" name="searchCategory">
+        <br>
+        <input type="submit" value="Submit">
+    </form>
 
     <table>
-            <% for(var i=0; i < listingResults.length; i++) { %>
+            <% for(var i=0; i < searchResults.length; i++) { %>
                <tr>
-                 <td><%= listingResults[i].singleListing.name %></td>
-                 <td><%= listingResults[i].singleListing.serviceID %></td>
-                 <td><%= listingResults[i].singleListing.category %></td>
-                 <td><%= listingResults[i].singleListing.location %></td>
-                 <td><%= listingResults[i].singleListing.description %></td>
-                 <td><%for (var image in listingResults[i].singleListing.imageFiles){%>
-                        <img src="/temp/<%= listingResults[i].singleListing.imageFiles[image] %>" alt="" height="100">
+                 <td><%= searchResults[i].name %></td>
+                 <td><%= searchResults[i].serviceID %></td>
+                 <td><%= searchResults[i].category %></td>
+                 <td><%= searchResults[i].location %></td>
+                 <td><%= searchResults[i].description %></td>
+                 <td><%for (var image in searchResults[i].imageFiles){%>
+                        <img src="/temp/<%= searchResults[i].imageFiles[image] %>" alt="" height="100">
                     <%}%></td>
                </tr>
             <% } %>

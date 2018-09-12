@@ -6,7 +6,8 @@
         "indent": ["error", 4],
         "max-len": ["error", { "code": 120 }],
         "no-fallthrough": "off",
-        "no-case-declarations": "off"
+        "no-case-declarations": "off",
+        "prefer-const": "off"
     },
     "env": {
         "mocha": true,
