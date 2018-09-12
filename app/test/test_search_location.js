@@ -32,28 +32,25 @@ describe('Search Route', () => {
         done();
     });
 
-    /* Sample Data */
-    const sampleData = [
-        {
-            serviceid: '1000',
-            name: 'Daniel',
-            location: 'Test',
-            category: 'Test',
-            description: 'Test Desc',
-            imageFiles: [],
-        },
-    ];
 
     // Begin test for rendering a search page determined by location
     it('Should return Search with a Location as is', (done) => {
         // Get express's router functions
         const router = express.Router();
-        // Get the path to index.html
-        // Read file at the specified path into a string (reading synchonously is OK for testing)
-        const file = fs.readFileSync(path.join(__dirname, '../views/search.ejs'),
-            { encoding: 'utf-8' }, (err, contents) => contents);
+        const listingResults = [];
+        const singleListing = {
+            serviceid: 1000,
+            name: 'Daniel',
+            location: 'Test',
+            category: 'Test',
+            description: 'Test Desc',
+            imageFiles: [],
+        };
+
+        listingResults.push(singleListing); // Get the path to index.html
+
         // Render view with EJS
-        const searchpage = ejs.render(file, sampleData[0]);
+        const searchpage = ejs.render('search.ejs', { listingResults });
 
         // Respond to supertest's GET request with the file at filePath
         request(router)
@@ -71,20 +68,28 @@ describe('Search Route', () => {
     it('Should return Search with a Category as is', (done) => {
         // Get express's router functions
         const router = express.Router();
-        // Get the path to index.html
-        // Read file at the specified path into a string (reading synchonously is OK for testing)
-        const file = fs.readFileSync(path.join(__dirname, '../views/search.ejs'),
-            { encoding: 'utf-8' }, (err, contents) => contents);
+        const listingResults = [];
+        const singleListing = {
+            serviceid: 1000,
+            name: 'Daniel',
+            location: 'Test',
+            category: 'Test',
+            description: 'Test Desc',
+            imageFiles: [],
+        };
+
+        listingResults.push(singleListing); // Get the path to index.html
+
         // Render view with EJS
-        const searchpage = ejs.render(file, sampleData[0]);
+        const searchpage = ejs.render('search.ejs', { listingResults });
 
         // Respond to supertest's GET request with the file at filePath
         request(router)
-            .get('/search/category/Test', (req, res) => {
+            .get('/search/location/Test', (req, res) => {
                 res.render('search.ejs', res);
             })
-            // Then compare the contents of the file we read with
-            // the file we sent to ensure they are both the same
+        // Then compare the contents of the file we read with
+        // the file we sent to ensure they are both the same
             .expect('Content-Type', 'text/html; charset utf-8')
             .expect(searchpage);
         done();
