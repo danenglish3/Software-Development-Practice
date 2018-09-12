@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <title>Search</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" media="screen" href="../public/css/main.css" />
+    <script src="../public/js/main.js"></script>
+</head>
+
+<body>
+    <h1>MULTIPLE LISTINGS</h1>
+
+    <table>
+            <% for(var i=0; i < listingResults.length; i++) { %>
+               <tr>
+                 <td><%= listingResults[i].singleListing.name %></td>
+                 <td><%= listingResults[i].singleListing.serviceID %></td>
+                 <td><%= listingResults[i].singleListing.category %></td>
+                 <td><%= listingResults[i].singleListing.location %></td>
+                 <td><%= listingResults[i].singleListing.description %></td>
+                 <td><%for (var image in listingResults[i].singleListing.imageFiles){%>
+                        <img src="/temp/<%= listingResults[i].singleListing.imageFiles[image] %>" alt="" height="100">
+                    <%}%></td>
+               </tr>
+            <% } %>
+    </table>    
+</body>
+
+</html>
