@@ -8,7 +8,7 @@ const connection = require('../database');
 const router = express.Router(); // Get express's router functions
 
 let searchResults = []; // Used to send listings back to search page
-let locationAffectedRows; // Used to keep track of returned listings from location search
+let serviceIdResults = [];
 
 function pushService(serv) {
     // console.log(serv);
@@ -26,10 +26,6 @@ function pushService(serv) {
     }
 }
 
-function reloadSearch(result) {
-    result.render('search.ejs', { searchResults });
-    searchResults = [];
-}
 
 router.get('/search', (req, res) => {
     searchResults = [];
@@ -48,71 +44,122 @@ router.get('/search', (req, res) => {
 router.post('/search', (req, res) => {
     const searchParamaters = {
         location: req.body.searchLocation,
-        category: req.body.searchCategory,
+        category: req.body.searchCategoryn,
         keywords: req.body.searchKeywords,
     };
-    // console.log(searchParamaters);
+    console.log(req);
+    if (!(searchParamaters.location === 'default')) {
+        new Promise(((resolve, reject) => {
+            const queryService = `SELECT * FROM website_user.Service \
+            WHERE Location='${searchParamaters.location}'`;
+            connection.query(queryService, (err, results) => {
+                resolve(results);
+                console.log('results: ', results);
+                console.log(queryService);
+            });
+        // return results;
+        })).then(results => results.forEach((service) => {
+            serviceIdResults.push(service.Service_ID);
+            console.log('Location ids: ', serviceIdResults);
+        }))
+            .then(() => {
+                let ids = `${serviceIdResults.join(',')}`;
+                console.log(ids);
+                const queryS = `SELECT * FROM website_user.Service WHERE Service_ID IN (${ids})`;
+                connection.query(queryS, (err, results2) => {
+                    // console.log('results 2 : ', results2);
+                });
+            // console.log(queryS);
+            });
+    }
+    if (!(searchParamaters.category === 'default')) {
+        new Promise(((resolve, reject) => {
+            const queryService2 = `SELECT * FROM website_user.Service WHERE Category='${searchParamaters.category}'`;
+            connection.query(queryService2, (err, results4) => {
+                // resolve(results);
+                console.log(queryService2);
+                console.log('category results: ', results4);
+            });
+        // return results;
+        })).then(results => results.forEach((service) => {
+            serviceIdResults.push(service.Service_ID);
+            console.log('Category Ids: ', serviceIdResults);
+        }))
+            .then(() => {
+                let ids = `${serviceIdResults.join(',')}`;
+                console.log(ids);
+                const queryS = `SELECT * FROM website_user.Service WHERE Service_ID IN (${ids})`;
+                connection.query(queryS, (err, results2) => {
+                    // console.log('results 2 : ', results2);
+                });
+            // console.log(queryS);
+            });
+    }
+});
 
-    const queryService = `SELECT * FROM website_user.Service \
+
+/* function searchByLocation(req, res, searchParamaters) {
+    if (!(req.body.searchLocation === 'default')) { // select all the services by location - if specified
+        // console.log(searchParamaters);
+        const queryService = `SELECT * FROM website_user.Service \
     WHERE Location='${searchParamaters.location}'`;
-    connection.query(queryService, (err, results) => {
+        connection.query(queryService, (err, results) => {
         // console.log(results.length);
-        locationAffectedRows = results.length;
-        console.log(locationAffectedRows);
-        if (locationAffectedRows === 0) {
+            locationAffectedRows = results.length;
+            console.log(locationAffectedRows);
+            if (locationAffectedRows === 0) {
             // res.send('doesnt match');
-            res.redirect('/search');
-        }
-        // Once the above query is complete:
-        if (err) throw err;
-        results.forEach((service) => {
+                res.redirect('/invalid-search');
+            }
+            // Once the above query is complete:
+            if (err) throw err;
+            results.forEach((service) => {
             // Step 2) Create a statement to get the profile for which the service is linked to
-            const queryProfileID = `SELECT Account_ID FROM website_user.Profile WHERE \
+                const queryProfileID = `SELECT Account_ID FROM website_user.Profile WHERE \
                 website_user.Profile.Profile_ID = '${service.Profile_ID}'`;
-            connection.query(queryProfileID, (err2, results2) => {
-                if (err2) throw err;
-                // Once the above is complete
-                const accID = {
-                    accid: results2[0].Account_ID,
-                };// Save the account ID for easy reference (was used in earlier versions)
+                connection.query(queryProfileID, (err2, results2) => {
+                    if (err2) throw err;
+                    // Once the above is complete
+                    const accID = {
+                        accid: results2[0].Account_ID,
+                    };// Save the account ID for easy reference (was used in earlier versions)
 
-                // step 3) Create a statement that will get the business or persons name that holds the account
-                //         using the account id selected in step 2
-                const queryAccountName = `SELECT Name FROM website_user.AccountHolder WHERE \
+                    // step 3) Create a statement that will get the business or persons name that holds the account
+                    //         using the account id selected in step 2
+                    const queryAccountName = `SELECT Name FROM website_user.AccountHolder WHERE \
                     website_user.AccountHolder.Account_ID = '${accID.accid}'`;
-                connection.query(queryAccountName, (err3, results3) => {
-                    if (err3) throw err;
+                    connection.query(queryAccountName, (err3, results3) => {
+                        if (err3) throw err;
 
-                    // Step 4) Create a statement that will gather all the photos that are related to a aervice
-                    const queryPhotos = `SELECT * FROM Photo WHERE Service_ID = ${service.Service_ID}`;
-                    connection.query(queryPhotos, (err4, results4) => {
-                    // Create a singleListing object that holds the information required
-                        const singleListing = {
-                            serviceid: service.Service_ID,
-                            name: results3[0].Name, // Selected in step 3
-                            location: service.Location,
-                            category: service.Category,
-                            description: service.Description,
-                            imageFiles: [], // Create empty array for holding filenames for the images
-                        };
-                        results4.forEach((element) => { // For each result of the photo query (results3):
-                            const filename = `${uuid()}.${element.Extension}`; // Create a filename
-                            singleListing.imageFiles.push(filename); // Add filename to array in singleListing object
-                            // Write the file to the temp directory
-                            fs.writeFile(`app/public/temp/${filename}`, element.Photo_Blob, (err5) => {
-                                if (err5) throw err5;
+                        // Step 4) Create a statement that will gather all the photos that are related to a aervice
+                        const queryPhotos = `SELECT * FROM Photo WHERE Service_ID = ${service.Service_ID}`;
+                        connection.query(queryPhotos, (err4, results4) => {
+                            // Create a singleListing object that holds the information required
+                            const singleListing = {
+                                serviceid: service.Service_ID,
+                                name: results3[0].Name, // Selected in step 3
+                                location: service.Location,
+                                category: service.Category,
+                                description: service.Description,
+                                imageFiles: [], // Create empty array for holding filenames for the images
+                            };
+                            results4.forEach((element) => { // For each result of the photo query (results3):
+                                const filename = `${uuid()}.${element.Extension}`; // Create a filename
+                                singleListing.imageFiles.push(filename); // Add filename to array in singleListing object
+                                // Write the file to the temp directory
+                                fs.writeFile(`app/public/temp/${filename}`, element.Photo_Blob, (err5) => {
+                                    if (err5) throw err5;
+                                });
                             });
+                            pushService(singleListing);
                         });
-                        pushService(singleListing);
-                        if (locationAffectedRows === searchResults.length) {
-                            reloadSearch(res);
-                        }
                     });
                 });
             });
         });
-    });
-});
+    }
+} */
+
 
 // Search by just a location
 router.get('/search/location/:Location', (req, res) => {
