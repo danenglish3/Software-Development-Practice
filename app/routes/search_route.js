@@ -44,7 +44,7 @@ router.get('/search', (req, res) => {
 router.post('/search', (req, res) => {
     const searchParamaters = {
         location: req.body.searchLocation,
-        category: req.body.searchCategoryn,
+        category: req.body.searchCategory,
         keywords: req.body.searchKeywords,
     };
     console.log(req);
