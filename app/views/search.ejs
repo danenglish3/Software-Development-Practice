@@ -9,51 +9,37 @@
     <script src="../public/js/main.js"></script>
 </head>
 
-<body>
-        <h1>Search Page</h1>
+<body>    
+
+        <h1>New Search</h1>
     <!--Upon Submitting the form, make a request with the post method to url /new-listing-->
-    <form method="post" action="/search" enctype="multipart/form-data" id="newSearchRequest">
-        <label>Keyword Search</label>
+    <form method="post" action="/search" enctype="multipart/form-data" id="newListingForm">
+        <label>Keyword</label>
         <br>
-        <input type="text" name="searchKeywords">
+        <input type ="text" name="searchKeyword">
         <br>
         <label>Location</label>
         <br>
         <select name="searchLocation">
-            <option value= "default">Choose Location</option>
-            <option value="Auckland">Auckland</option>
-            <option value="Wellington">Wellington</option>
-            <option value="Christchurch">Christchurch</option>
-            <option value="Test">Test</option>
-        </select>
+                <option value="Default">Default</option>
+                <option value="Auckland">Auckland</option>
+                <option value="Wellington">Wellington</option>
+                <option value="Christchurch">Christchurch</option>
+                <option value="Test">Test</option>
+              </select>
         <br>
         <label>Catergory</label>
         <br>
         <select name="searchCategory">
-            <option value= "default">Choose Category</option>
-            <option value="Construction">Construction</option>
-            <option value="Landscaping">Landscaping</option>
-            <option value="Automotive">Automotive</option>
-            <option value="Test">Test</option>
-        </select>
+                <option value="Default">Default</option>
+                <option value="Landscaping">Landscaping</option>
+                <option value="Construction">Construction</option>
+                <option value="Automotive">Automotive</option>
+                <option value="Test">Test</option>
+              </select>        
         <br>
         <input type="submit" value="Submit">
     </form>
-
-    <table>
-            <% for(var i=0; i < searchResults.length; i++) { %>
-               <tr>
-                 <td><%= searchResults[i].name %></td>
-                 <td><%= searchResults[i].serviceID %></td>
-                 <td><%= searchResults[i].category %></td>
-                 <td><%= searchResults[i].location %></td>
-                 <td><%= searchResults[i].description %></td>
-                 <td><%for (var image in searchResults[i].imageFiles){%>
-                        <img src="/temp/<%= searchResults[i].imageFiles[image] %>" alt="" height="100">
-                    <%}%></td>
-               </tr>
-            <% } %>
-    </table>    
 </body>
 
 </html>

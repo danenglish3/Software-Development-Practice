@@ -7,6 +7,7 @@ const connection = mysql.createConnection({
     password: 'dcjscomp602',
     database: 'website_user',
     connectionLimit: 20,
+    multipleStatements: true,
 });
 
 // Establishing connection to database using relevant information
