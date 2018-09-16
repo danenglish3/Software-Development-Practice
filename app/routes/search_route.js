@@ -1,20 +1,16 @@
 /* Dependencies */
+const session = require('express-session');// Used to save data between function calls
 const express = require('express');
 const fs = require('fs');
 const uuid = require('uuid/v4');
 const connection = require('../database');
-var session = require('express-session') // Used to save data between function calls
 
 const router = express.Router(); // Get express's router functions
-router.use(session({ secret: 'keyboard cat', cookie: { maxAge: 60000 }})); // Initialize secret? 
+router.use(session({ secret: 'keyboard cat', cookie: { maxAge: 60000 } })); // Initialize secret?    
 
-router.get('/search', (req, res) => { //Initial setup for search page
+router.get('/search', (req, res) => { // Initial setup for search page
     res.render('search.ejs');
 });
-
-// Post call for after a new search form has been submitted.
-// Will goto findServices THEN renderSearchPage
-router.post('/search', findServices, renderSearchPage, (req, res) => {});
 
 // First call after the .post from a new Search
 function findServices(req, res, next) {
@@ -22,30 +18,53 @@ function findServices(req, res, next) {
     const searchParamaters = { // Get search params from the form
         location: req.body.searchLocation,
         category: req.body.searchCategory,
-        keywords: req.body.searchKeywords,
+        keywords: req.body.searchKeyword,
     };
     let needJoin = false; // Indicate if their is more than one search param
-    if(!(searchParamaters.location === 'Default') && !(searchParamaters.category === 'Default')){
+    if (!(searchParamaters.location === 'Default') && !(searchParamaters.category === 'Default')) {
+        needJoin = true;
+    }
+    else if (!(searchParamaters.location === 'Default') && !(searchParamaters.keywords === '')) {
+        needJoin = true;
+    }
+    else if (!(searchParamaters.category === 'Default') && !(searchParamaters.keywords === '')) {
         needJoin = true;
     }
     console.log('search params', searchParamaters);
 
-    let condition = []; // Search conditions 
-    if(!(searchParamaters.location === 'Default')){ // IF search by location, add to conditions
+    let condition = []; // Search conditions
+    if (!(searchParamaters.location === 'Default')) { // IF search by location, add to conditions
         const queryLocationService = `Location='${searchParamaters.location}'`;
         condition.push(queryLocationService);
     }
-    if(!(searchParamaters.category === 'Default')){ // If search by category, add to conditions
+    if (!(searchParamaters.category === 'Default')) { // If search by category, add to conditions
         const queryCategoryService = `Category='${searchParamaters.category}'`;
         condition.push(queryCategoryService);
+    }
+    // let keywordStringArray = [];
+    let keywordString;
+    if (!(searchParamaters.keywords === '')) { // If search by keywords, add them to conditions
+        let keywordStringArray = [];
+        keywordStringArray = searchParamaters.keywords.split(' ');
+        // console.log('array length' ,keywordStringArray.length);
+        // console.log('keyword array: ', keywordStringArray);
+        for (let i = 0; i < keywordStringArray.length; i += 1) {
+            keywordString += keywordStringArray[i];
+            if (!(i === keywordStringArray.length - 1)) {
+                keywordString += '|';
+            }
+        }
+        keywordString = keywordString.slice(9, keywordString.length);
+        // console.log('keyword string: ', keywordString);
+        const queryDesc = `Description REGEXP '${keywordString}'`;
+        condition.push(queryDesc);
     }
 
     let conditionString; // Condition string for upcoming DB query
     console.log('condition ', condition);
-    if(needJoin){
+    if (needJoin) {
         conditionString = condition.join(' AND '); // If multiple conditions, join with AND
-    }    
-    else{
+    } else {
         conditionString = condition[0];
     }
     console.log(conditionString);
@@ -62,7 +81,7 @@ function renderSearchPage(req, res) {
     let listingResults = []; // Final listing results array
     let count = 0; // Count of how many results there are
 
-    req.services.forEach((service) => { //For each service found in the previous function
+    req.services.forEach((service) => { // For each service found in the previous function
         // Create a statement that will gather all the photos that are related to a aervice
         const queryPhotos = `SELECT * FROM Photo WHERE Service_ID = ${service.Service_ID}`;
         connection.query(queryPhotos, (err4, results4) => {
@@ -84,7 +103,7 @@ function renderSearchPage(req, res) {
                 });
             });
             listingResults.push({ singleListing }); // Push completed lising into final array
-            count += 1; //update count
+            count += 1; // update count
             if (count === req.services.length) { // Once all the services has been looped through and added
                 // console.log('hit render ', listingResults);
                 // res.render('search.ejs', { listingResults: listingResults });
@@ -95,11 +114,15 @@ function renderSearchPage(req, res) {
     });
 }
 
+// Post call for after a new search form has been submitted.
+// Will goto findServices THEN renderSearchPage
+router.post('/search', findServices, renderSearchPage, (req, res) => {});
 // This is used to render a new search results page after geting all the results
+
 router.get('/search/results', (req, res) => {
-    let listingResults =  req.session.serviceResults; // Results saved in previous function
+    let listingResults = req.session.serviceResults; // Results saved in previous function
     // console.log('search/results', listingResults);
-    res.render('search-results.ejs', {listingResults}); // Render the new page
+    res.render('search-results.ejs', { listingResults }); // Render the new page
 });
 
 // Allow the router object to be used in other js files.
