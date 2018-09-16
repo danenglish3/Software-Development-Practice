@@ -5,8 +5,7 @@
         "no-console": "off",
         "indent": ["error", 4],
         "max-len": ["error", { "code": 120 }],
-        "no-case-declarations": "off",
-        "prefer-const": "off",
+        "no-case-declarations": "off"
     },
     "env": {
         "mocha": true,
