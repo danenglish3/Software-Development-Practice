@@ -22,6 +22,7 @@ app.use(multer({ storage: multer.memoryStorage({}) }).any()); // Configure multe
 app.use(require('./routes/home_route'));
 app.use(require('./routes/listing_route'));
 app.use(require('./routes/search_route'));
+app.use(require('./routes/profile_route'));
 
 // Start server
 app.listen(PORT, () => {

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <title>Edit Profile</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" media="screen" href="/css/main.css" />
+    <script src="/js/main.js"></script>
+</head>
+
+<body>
+    <h1>Edit Profile</h1>
+    <!--Upon Submitting the form, make a request with the post method to url /new_profile-->
+    <form method="post" action="/edit_profile" enctype="multipart/form-data" id="editProfileForm">
+        <input type="hidden" name="accountID" value="<%= accountid %>">
+        <input type="hidden" name="photoID" value="<%= prevPhoto %>">
+        <label>Name</label>
+        <br>
+        <input type="text" name="accountName" value="<%= prevName %>">
+        <br>
+        <label>Phone</label>
+        <br>
+        <input type="text" name="profilePhone" value="<%= prevPhone %>">
+        <br>
+        <label>Street</label>
+        <br>
+        <input type="text" name="profileStreet" value="<%= prevStreet %>">
+        <br>
+        <label>Suburb</label>
+        <br>
+        <input type="text" name="profileSuburb" value="<%= prevSuburb %>">
+        <br>
+        <label>City</label>
+        <br>
+        <input type="text" name="profileCity" value="<%= prevCity %>">
+        <br>
+        <label>Postcode</label>
+        <br>
+        <input type="text" name="profilePostcode" value="<%= prevPostcode %>">
+        <br>
+        <label>Description</label>
+        <br>
+        <textarea name="profileDescription" rows="4" cols="50" form="editProfileForm"><%= prevDescription %></textarea> 
+        <br>
+        <label>Profile Image</label>
+        <br>
+        <input type="file" name="profileImage" accept="image/*">
+        <br>
+        <input type="submit" value="Submit">
+    </form>
+
+</body>
+
+</html>
