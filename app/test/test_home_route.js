@@ -7,49 +7,30 @@ const path = require('path');
 const ejs = require('ejs');
 
 describe('Home Route', () => {
-    let app;
-    let server;
+    const app = express();
 
-    // Start the server before running any tests
-    before((done) => { // Pass done to tell mocha to wait until done() is called
-        app = express(); // Initialise express
+    // Set view engine to EJS
+    app.set('view engine', 'ejs');
+    app.set('views', path.join(__dirname, '../views'));
 
-        // Set view engine to EJS
-        app.set('view engine', 'ejs');
-        app.set('views', path.join(__dirname, '../views'));
-
-        // Provide Express with middleware
-        app.use(express.static(path.join(__dirname, 'public'))); // Specify the folder which holds static files
-
-        server = app.listen(3000, () => { // Start the server on port 3000 while mocha is waiting
-            done(); // Tell mocha we are done so it no longer has to wait
+    // Test GET request route
+    it('Should return the home page as is', (done) => {
+        app.get('/', (req, res) => { // Define GET route
+            res.render('index.ejs', { siteName: 'Kiwi Trader' }); // Define response
         });
-    });
 
-    // Close the server after all tests are complete
-    after((done) => {
-        server.close();
-        done();
-    });
-
-    it('Should return homepage as is', (done) => {
-        // Get express's router functions
-        const router = express.Router();
-        // Get the path to index.html
-        // Read file at the specified path into a string (reading synchonously is OK for testing)
-        const file = fs.readFileSync(path.join(__dirname, '../views/index.ejs'), { encoding: 'utf-8' }, (err, contents) => contents);
-        // Render view with EJS
-        const homepage = ejs.render(file, { siteName: 'Kiwi Trader' });
-
-        // Respond to supertest's GET request with the file at filePath
-        request(router)
-            .get('/', (req, res) => {
-                res.render('index.ejs', { siteName: 'Kiwi Trader' });
-            })
-            // Then compare the contents of the file we read with
-            // the file we sent to ensure they are both the same
-            .expect('Content-Type', 'text/html; charset utf-8')
-            .expect(homepage);
-        done();
+        request(app).get('/') // Make a GET request
+            .expect('Content-Type', 'text/html; charset=utf-8') // Check if the response is HTML
+            .expect(
+                ejs.render( // Render an EJS template
+                    fs.readFileSync( // By reading a file
+                        path.join(__dirname, '../views/index.ejs'), // From the views folder
+                        { encoding: 'utf-8' },
+                        (err, contents) => contents, // And returning the contents
+                    ),
+                    { siteName: 'Kiwi Trader' }, // To be rendered using the sample data
+                ),
+            )
+            .end(done);
     });
 });
