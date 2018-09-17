@@ -36,8 +36,6 @@
                         </td>
                     </tr>
                 <% } %>
-                    
-
             <tr>
                 <td>
                     <%= listingResults[i].singleListing.name %>
@@ -58,6 +56,11 @@
                     <%for (var image in listingResults[i].singleListing.imageFiles){%>
                     <img src="/temp/<%= listingResults[i].singleListing.imageFiles[image] %>" alt="" height="100">
                     <%}%>
+                </td>
+                <td>
+                    <form method="get" action="/profile/<%= listingResults[i].singleListing.profileid %>" enctype="multipart/form-data" id="selectProfile">
+                            <input type="submit" value="Go to Profile">
+                    </form>                    
                 </td>
             </tr>
             <% } %>

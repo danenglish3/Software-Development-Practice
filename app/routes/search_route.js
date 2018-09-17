@@ -99,6 +99,7 @@ function renderSearchPage(req, res) {
                     category: service.Category,
                     description: service.Description,
                     imageFiles: [], // Create empty array for holding filenames for the images
+                    profileid: service.Profile_ID,
                 };
                 results4.forEach((element) => { // For each result of the photo query (results3):
                     const filename = `${uuid()}.${element.Extension}`; // Create a filename
