@@ -11,10 +11,33 @@
 
 <body>    
     <h1>Search Results</h1>
-
         <% if(listingResults.length > 0){ %>
             <table>
             <% for(var i = 0; i < listingResults.length; i++) { %>
+                <%if (i == 0) { %>
+                    <tr>
+                        <td>
+                            <label><strong>Name</strong></label>
+                        </td>
+                        <td>
+                            <label><strong>ID</strong></label>
+                        </td>
+                        <td>
+                            <label><strong>Category</strong></label>
+                        </td>
+                        <td>
+                            <label><strong>Location</strong></label>
+                        </td>
+                        <td>
+                            <label><strong>Description</strong></label>
+                        </td>
+                        <td>
+                            <label><strong>Service Photos</strong></label>
+                        </td>
+                    </tr>
+                <% } %>
+                    
+
             <tr>
                 <td>
                     <%= listingResults[i].singleListing.name %>
