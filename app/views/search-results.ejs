@@ -10,34 +10,39 @@
 </head>
 
 <body>    
+    <h1>Search Results</h1>
 
-        <h1>Search Results</h1>
-    <table>
-        <% for(var i = 0; i < listingResults.length; i++) { %>
-        <tr>
-            <td>
-                <%= listingResults[i].singleListing.name %>
-            </td>
-            <td>
-                <%= listingResults[i].singleListing.serviceid %>
-            </td>
-            <td>
-                <%= listingResults[i].singleListing.category %>
-            </td>
-            <td>
-                <%= listingResults[i].singleListing.location %>
-            </td>
-            <td>
-                <%= listingResults[i].singleListing.description %>
-            </td>
-            <td>
-                <%for (var image in listingResults[i].singleListing.imageFiles){%>
-                <img src="/temp/<%= listingResults[i].singleListing.imageFiles[image] %>" alt="" height="100">
-                <%}%>
-            </td>
-        </tr>
+        <% if(listingResults.length > 0){ %>
+            <table>
+            <% for(var i = 0; i < listingResults.length; i++) { %>
+            <tr>
+                <td>
+                    <%= listingResults[i].singleListing.name %>
+                </td>
+                <td>
+                    <%= listingResults[i].singleListing.serviceid %>
+                </td>
+                <td>
+                    <%= listingResults[i].singleListing.category %>
+                </td>
+                <td>
+                    <%= listingResults[i].singleListing.location %>
+                </td>
+                <td>
+                    <%= listingResults[i].singleListing.description %>
+                </td>
+                <td>
+                    <%for (var image in listingResults[i].singleListing.imageFiles){%>
+                    <img src="/temp/<%= listingResults[i].singleListing.imageFiles[image] %>" alt="" height="100">
+                    <%}%>
+                </td>
+            </tr>
+            <% } %>
+            </table>
+          <% } else{ %>  
+            <h1>Unable to find anything with that criteria, Please try again!</h1>
         <% } %>
-    </table>
+
     <form method="get" action="/search" enctype="multipart/form-data" id="backToSearch">
         <input type="submit" value="Back to search">
     </form>
