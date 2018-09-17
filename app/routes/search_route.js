@@ -6,7 +6,7 @@ const uuid = require('uuid/v4');
 const connection = require('../database');
 
 const router = express.Router(); // Get express's router functions
-router.use(session({ secret: 'keyboard cat', cookie: { maxAge: 60000 } })); // Initialize secret?    
+router.use(session({ secret: 'keyboard cat', cookie: { maxAge: 60000 } })); // Initialize secret?
 
 router.get('/search', (req, res) => { // Initial setup for search page
     res.render('search.ejs');
@@ -20,18 +20,24 @@ function findServices(req, res, next) {
         keywords: req.body.searchKeyword,
     };
     let needJoin = false; // Indicate if their is more than one search param
+    // Location and category
     if (!(searchParamaters.location === 'Default') && !(searchParamaters.category === 'Default')) {
         needJoin = true;
+    // location and keywords
     } else if (!(searchParamaters.location === 'Default') && !(searchParamaters.keywords === '')) {
         needJoin = true;
+    // category and keywords
     } else if (!(searchParamaters.category === 'Default') && !(searchParamaters.keywords === '')) {
         needJoin = true;
     }
-    req.undefResults = false;
-    if ((searchParamaters.location === 'Default') && (searchParamaters.category === 'Default') && (searchParamaters.keywords === '')) {
-        req.undefResults = true;
+
+    req.undefResults = false; // Used to check if there are any results from the query
+    // If nothing is entered in the search page, but they click search
+    if ((searchParamaters.location === 'Default') && (searchParamaters.category === 'Default')
+        && (searchParamaters.keywords === '')) {
+        req.undefResults = true; // Set undefined results to true
     }
-    let condition = []; // Search conditions
+    const condition = []; // Search conditions
     if (!(searchParamaters.location === 'Default')) { // IF search by location, add to conditions
         const queryLocationService = `Location='${searchParamaters.location}'`;
         condition.push(queryLocationService);
@@ -40,29 +46,32 @@ function findServices(req, res, next) {
         const queryCategoryService = `Category='${searchParamaters.category}'`;
         condition.push(queryCategoryService);
     }
+    // This next section focus's on searching via keywords
     let keywordString;
     let keywordStringArray = [];
     if (!(searchParamaters.keywords === '')) { // If search by keywords, add them to conditions
+        // Split the input keyword paramaters up into an array
         keywordStringArray = searchParamaters.keywords.split(' ');
 
         for (let i = 0; i < keywordStringArray.length; i += 1) {
-            keywordString += keywordStringArray[i];
+            keywordString += keywordStringArray[i]; // Add each keyword into the final string
             if (!(i === keywordStringArray.length - 1)) {
-                keywordString += '|';
+                keywordString += '|'; // If theres more than one, a '|' is added for the final regexp query
             }
         }
+        // For some reason there was always an undefined at the start of the string
+        // So that needs to be cut away
         keywordString = keywordString.slice(9, keywordString.length);
         const queryDesc = `Description REGEXP '${keywordString}' OR Title REGEXP '${keywordString}'`;
-        condition.push(queryDesc);
+        condition.push(queryDesc); // Push the keyword search string into the final query conditions
     }
     let conditionString; // Condition string for upcoming DB query
-    console.log('condition ', condition);
-    if (needJoin) {
+    if (needJoin) { // If there is a need to join the condition strings (if there is more than 1)
         conditionString = condition.join(' AND '); // If multiple conditions, join with AND
     } else {
-        conditionString = condition[0];
+        conditionString = condition[0]; // Else set the condition string to the lone query
     }
-    let sql = `SELECT * FROM website_user.Service WHERE ${conditionString}`; // SQL query for getting srvices
+    const sql = `SELECT * FROM website_user.Service WHERE ${conditionString}`; // SQL query for getting srvices
     connection.query(sql, (err, results) => {
         req.services = results; // Save service results in req to be used in next function
         return next(); // Call next function, renderSearchPage
@@ -70,12 +79,14 @@ function findServices(req, res, next) {
 }
 
 function renderSearchPage(req, res) {
-    let listingResults = []; // Final listing results array
+    const listingResults = []; // Final listing results array
     let count = 0; // Count of how many results there are
+    // If the results of the query come back with nothing
+    // Set undefResults to true for futher on in the function
     if (!(req.undefResults) && req.services.length === 0) {
         req.undefResults = true;
     }
-    if (!(req.undefResults)) {
+    if (!(req.undefResults)) { // IF there are results to be displayed
         req.services.forEach((service) => { // For each service found in the previous function
         // Create a statement that will gather all the photos that are related to a aervice
             const queryPhotos = `SELECT * FROM Photo WHERE Service_ID = ${service.Service_ID}`;
@@ -105,7 +116,7 @@ function renderSearchPage(req, res) {
                 }
             });
         });
-    } else {
+    } else { // IF there are no results to be displayed
         req.session.serviceResults = [];
         res.redirect('/search/results');
     }
@@ -117,7 +128,7 @@ router.post('/search', findServices, renderSearchPage, (req, res) => {});
 // This is used to render a new search results page after geting all the results
 
 router.get('/search/results', (req, res) => {
-    let listingResults = req.session.serviceResults; // Results saved in previous function
+    const listingResults = req.session.serviceResults; // Results saved in previous function
     // console.log('search/results', listingResults);
     res.render('search-results.ejs', { listingResults }); // Render the new page
 });
