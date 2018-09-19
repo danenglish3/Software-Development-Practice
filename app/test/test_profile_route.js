@@ -27,6 +27,7 @@ describe('Profile Routes', () => { // Test profile routes
 
     beforeEach((done) => { // Reset sample data before every test
         sampleData = {
+            id: 1,
             name: "Tester's Auto Shop",
             image: 'no_img.png',
             joinDate: '01/01/2001',
@@ -36,6 +37,7 @@ describe('Profile Routes', () => { // Test profile routes
             city: 'Auckland',
             postcode: '0123',
             description: 'Unit Test',
+            listingResults: [],
         };
         done();
     });
