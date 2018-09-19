@@ -86,6 +86,7 @@ router.post('/new_listing', (req, res) => { // Make sure this URL matches the on
             const image = { // Create image object corresponding to 'Photo' table
                 Photo_Blob: data,
                 Extension: file.originalname.substring(file.originalname.lastIndexOf('.') + 1, file.originalname.length),
+                Profile_ID: listing.Profile_ID,
                 Service_ID: results.insertId,
             };
 
@@ -113,7 +114,8 @@ router.get('/listing/:id/edit', (req, res) => {
         connection.query(queryImages, (err2, results2, fields2) => { // Submit statement
             // Create a listing object with property names that correspond to the ejs template
             const listing = {
-                id: results[0].Service_ID,
+                accountID: results[0].Profile_ID,
+                listingID: results[0].Service_ID,
                 prevTitle: results[0].Title, // Use the information from the first query (results) to add the title
                 prevLocation: results[0].Location,
                 prevCategory: results[0].Category,
@@ -173,6 +175,7 @@ router.post('/edit_listing', (req, res) => { // Make sure this URL matches the o
                 const image = { // Create image object corresponding to 'Photo' table
                     Photo_Blob: data,
                     Extension: file.originalname.substring(file.originalname.lastIndexOf('.') + 1, file.originalname.length),
+                    Profile_ID: req.body.accountID,
                     Service_ID: results.insertId,
                 };
 
