@@ -9,23 +9,37 @@
     <script src="../public/js/main.js"></script>
 </head>
 
-<body>
-    <h1>MULTIPLE LISTINGS</h1>
+<body>    
 
-    <table>
-            <% for(var i=0; i < listingResults.length; i++) { %>
-               <tr>
-                 <td><%= listingResults[i].singleListing.name %></td>
-                 <td><%= listingResults[i].singleListing.serviceID %></td>
-                 <td><%= listingResults[i].singleListing.category %></td>
-                 <td><%= listingResults[i].singleListing.location %></td>
-                 <td><%= listingResults[i].singleListing.description %></td>
-                 <td><%for (var image in listingResults[i].singleListing.imageFiles){%>
-                        <img src="/temp/<%= listingResults[i].singleListing.imageFiles[image] %>" alt="" height="100">
-                    <%}%></td>
-               </tr>
-            <% } %>
-    </table>    
+        <h1>New Search</h1>
+    <!--Upon Submitting the form, make a request with the post method to /search-->
+    <form method="post" action="/search" enctype="multipart/form-data" id="newSearchForm">
+        <label>Keyword</label>
+        <br>
+        <input type ="text" name="searchKeyword">
+        <br>
+        <label>Location</label>
+        <br>
+        <select name="searchLocation">
+                <option value="Default">Default</option>
+                <option value="Auckland">Auckland</option>
+                <option value="Wellington">Wellington</option>
+                <option value="Christchurch">Christchurch</option>
+                <option value="Test">Test</option>
+              </select>
+        <br>
+        <label>Catergory</label>
+        <br>
+        <select name="searchCategory">
+                <option value="Default">Default</option>
+                <option value="Landscaping">Landscaping</option>
+                <option value="Construction">Construction</option>
+                <option value="Automotive">Automotive</option>
+                <option value="Test">Test</option>
+              </select>        
+        <br>
+        <input type="submit" value="Submit">
+    </form>
 </body>
 
 </html>

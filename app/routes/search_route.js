@@ -1,175 +1,137 @@
 /* Dependencies */
+const session = require('express-session');// Used to save data between function calls
 const express = require('express');
 const fs = require('fs');
 const uuid = require('uuid/v4');
 const connection = require('../database');
 
-
 const router = express.Router(); // Get express's router functions
+router.use(session({ secret: 'keyboard cat', cookie: { maxAge: 60000 } })); // Initialize secret?
 
-/* router.get('/search', (req, res) => {
-    const queryService = 'SELECT * FROM website_user.Service';
-    connection.query(queryService, (err, results) => {
-        if (err) throw err;
-
-        console.log(results);
-    });
-}); */
-
-// Search by just a location
-router.get('/search/location/:Location', (req, res) => {
-    const listingResults = [];
-    let count = 0;
-    // Create a select statement to query the db for a singleListing using the ':id' in  the '/singleListing/:id'
-    const queryService = `SELECT * FROM website_user.Service \
-        WHERE Location='${req.params.Location}'`; // Submit the statement
-    connection.query(queryService, (err, results) => {
-        // Once the above query is complete:
-        if (err) throw err;
-        results.forEach((service) => {
-            // Step 2) Create a statement to get the profile for which the service is linked to
-            const queryProfileID = `SELECT Account_ID FROM website_user.Profile WHERE \
-                website_user.Profile.Profile_ID = '${service.Profile_ID}'`;
-            connection.query(queryProfileID, (err2, results2) => {
-                if (err2) throw err;
-                // Once the above is complete
-                const accID = {
-                    accid: results2[0].Account_ID,
-                };// Save the account ID for easy reference (was used in earlier versions)
-
-                // step 3) Create a statement that will get the business or persons name that holds the account
-                //         using the account id selected in step 2
-                const queryAccountName = `SELECT Name FROM website_user.AccountHolder WHERE \
-                    website_user.AccountHolder.Account_ID = '${accID.accid}'`;
-                connection.query(queryAccountName, (err3, results3) => {
-                    if (err3) throw err;
-
-                    // Step 4) Create a statement that will gather all the photos that are related to a aervice
-                    const queryPhotos = `SELECT * FROM Photo WHERE Service_ID = ${service.Service_ID}`;
-                    connection.query(queryPhotos, (err4, results4) => {
-                    // Create a singleListing object that holds the information required
-                        const singleListing = {
-                            serviceid: service.Service_ID,
-                            name: results3[0].Name, // Selected in step 3
-                            location: service.Location,
-                            category: service.Category,
-                            description: service.Description,
-                            imageFiles: [], // Create empty array for holding filenames for the images
-                        };
-                        results4.forEach((element) => { // For each result of the photo query (results3):
-                            const filename = `${uuid()}.${element.Extension}`; // Create a filename
-                            singleListing.imageFiles.push(filename); // Add filename to array in singleListing object
-                            // Write the file to the temp directory
-                            fs.writeFile(`app/public/temp/${filename}`, element.Photo_Blob, (err5) => {
-                                if (err5) throw err5;
-                            });
-                        });
-
-                        listingResults.push({ singleListing });
-                        count += 1;
-                        if (count === results.length) { // Once all the services has been looped through and added
-                            console.log(listingResults);
-                            res.render('search.ejs', { listingResults });
-                            // Must be rendered in this step otherwise it wont work for some reason..
-                        }
-                    });
-                });
-            });
-        });
-    });
+router.get('/search', (req, res) => { // Initial setup for search page
+    res.render('search.ejs');
 });
 
-// Search by just a category
-router.get('/search/category/:category', (req, res) => {
-    const listingResults = [];
-    let count = 0;
-    // step 1) Create a select statement to query the db for a singleListing using the
-    // ':category' in  the '/search/:category'
-    const queryService = `SELECT * FROM website_user.Service \
-        WHERE Category='${req.params.category}'`; // Submit the statement
-    connection.query(queryService, (err, results) => {
-        // Once the above query is complete:
-        if (err) throw err;
-        results.forEach((service) => {
-            // Step 2) Create a statement to get the profile for which the service is linked to
-            const queryProfileID = `SELECT Account_ID FROM website_user.Profile WHERE \
-                    website_user.Profile.Profile_ID = '${service.Profile_ID}'`;
-            connection.query(queryProfileID, (err2, results2) => {
-                if (err2) throw err;
-                // Once the above is complete
-                const accID = {
-                    accid: results2[0].Account_ID,
-                };// Save the account ID for easy reference (was used in earlier versions)
+// First call after the .post from a new Search
+function findServices(req, res, next) {
+    const searchParamaters = { // Get search params from the form
+        location: req.body.searchLocation,
+        category: req.body.searchCategory,
+        keywords: req.body.searchKeyword,
+    };
+    let needJoin = false; // Indicate if their is more than one search param
+    // Location and category
+    if (!(searchParamaters.location === 'Default') && !(searchParamaters.category === 'Default')) {
+        needJoin = true;
+    // location and keywords
+    } else if (!(searchParamaters.location === 'Default') && !(searchParamaters.keywords === '')) {
+        needJoin = true;
+    // category and keywords
+    } else if (!(searchParamaters.category === 'Default') && !(searchParamaters.keywords === '')) {
+        needJoin = true;
+    }
 
-                // step 3) Create a statement that will get the business or persons name that holds the account
-                //         using the account id selected in step 2
-                const queryAccountName = `SELECT Name FROM website_user.AccountHolder WHERE \
-                        website_user.AccountHolder.Account_ID = '${accID.accid}'`;
-                connection.query(queryAccountName, (err3, results3) => {
-                    if (err3) throw err;
+    req.undefResults = false; // Used to check if there are any results from the query
+    // If nothing is entered in the search page, but they click search
+    if ((searchParamaters.location === 'Default') && (searchParamaters.category === 'Default')
+        && (searchParamaters.keywords === '')) {
+        req.undefResults = true; // Set undefined results to true
+    }
+    const condition = []; // Search conditions
+    if (!(searchParamaters.location === 'Default')) { // IF search by location, add to conditions
+        const queryLocationService = `Location='${searchParamaters.location}'`;
+        condition.push(queryLocationService);
+    }
+    if (!(searchParamaters.category === 'Default')) { // If search by category, add to conditions
+        const queryCategoryService = `Category='${searchParamaters.category}'`;
+        condition.push(queryCategoryService);
+    }
+    // This next section focus's on searching via keywords
+    let keywordString;
+    let keywordStringArray = [];
+    if (!(searchParamaters.keywords === '')) { // If search by keywords, add them to conditions
+        // Split the input keyword paramaters up into an array
+        keywordStringArray = searchParamaters.keywords.split(' ');
 
-                    // Step 4) Create a statement that will gather all the photos that are related to a aervice
-                    const queryPhotos = `SELECT * FROM Photo WHERE Service_ID = ${service.Service_ID}`;
-                    connection.query(queryPhotos, (err4, results4) => {
-                        // Create a singleListing object that holds the information required
-                        const singleListing = {
-                            serviceid: service.Service_ID,
-                            name: results3[0].Name, // Selected in step 3
-                            location: service.Location,
-                            category: service.Category,
-                            description: service.Description,
-                            imageFiles: [], // Create empty array for holding filenames for the images
-                        };
-                        results4.forEach((element) => { // For each result of the photo query (results3):
-                            const filename = `${uuid()}.${element.Extension}`; // Create a filename
-                            singleListing.imageFiles.push(filename); // Add filename to array in singleListing object
-                            // Write the file to the temp directory
-                            fs.writeFile(`app/public/temp/${filename}`, element.Photo_Blob, (err5) => {
-                                if (err5) throw err5;
-                            });
-                        });
-
-                        listingResults.push({ singleListing });
-                        count += 1;
-                        if (count === results.length) { // Once all the services has been looped through and added
-                            console.log(listingResults);
-                            res.render('search.ejs', { listingResults });
-                            // Must be rendered in this step otherwise it wont work for some reason..
-                        }
-                    });
-                });
-            });
-        });
-    });
-});
-
-// Search by just a keyword -- url example, http://localhost:3000/search/keyword?key=Carl+Dan
-router.get('/search/keyword', (req) => {
-    // let listingResults = [];
-    let serviceIdResults = [];
-    // let count = 0;
-    let parameterArray = req.query.key.split(' '); // Turn the parameter into an array of strings
-    // console.log(parameterArray);
-    parameterArray.forEach((element) => { // Search for Titles containing the keywords
-        const queryService = `SELECT * FROM website_user.Service \
-        WHERE Title LIKE '%${element}%'`; // Submit the statement
-        connection.query(queryService, (err, results) => {
-        // Once the above query is complete:
-            if (err) throw err;
-            // console.log(results);
-            if (results.length > 0) {
-                results.forEach((service) => {
-                    const singleID = {
-                        serviceid: service.Service_ID,
-                    };
-                    serviceIdResults.push(singleID);
-                });
+        for (let i = 0; i < keywordStringArray.length; i += 1) {
+            keywordString += keywordStringArray[i]; // Add each keyword into the final string
+            if (!(i === keywordStringArray.length - 1)) {
+                keywordString += '|'; // If theres more than one, a '|' is added for the final regexp query
             }
-            console.log(serviceIdResults);
-        });
+        }
+        // For some reason there was always an undefined at the start of the string
+        // So that needs to be cut away
+        keywordString = keywordString.slice(9, keywordString.length);
+        const queryDesc = `Description REGEXP '${keywordString}' OR Title REGEXP '${keywordString}'`;
+        condition.push(queryDesc); // Push the keyword search string into the final query conditions
+    }
+    let conditionString; // Condition string for upcoming DB query
+    if (needJoin) { // If there is a need to join the condition strings (if there is more than 1)
+        conditionString = condition.join(' AND '); // If multiple conditions, join with AND
+    } else {
+        conditionString = condition[0]; // Else set the condition string to the lone query
+    }
+    const sql = `SELECT * FROM website_user.Service WHERE ${conditionString}`; // SQL query for getting srvices
+    connection.query(sql, (err, results) => {
+        req.services = results; // Save service results in req to be used in next function
+        return next(); // Call next function, renderSearchPage
     });
-    // parameterArray.splice(invalidIndex[0], 1);
-    // console.log(invalidIndex);
+}
+
+function renderSearchPage(req, res) {
+    const listingResults = []; // Final listing results array
+    let count = 0; // Count of how many results there are
+    // If the results of the query come back with nothing
+    // Set undefResults to true for futher on in the function
+    if (!(req.undefResults) && req.services.length === 0) {
+        req.undefResults = true;
+    }
+    if (!(req.undefResults)) { // IF there are results to be displayed
+        req.services.forEach((service) => { // For each service found in the previous function
+        // Create a statement that will gather all the photos that are related to a aervice
+            const queryPhotos = `SELECT * FROM Photo WHERE Service_ID = ${service.Service_ID}`;
+            connection.query(queryPhotos, (err4, results4) => {
+            // Create a singleListing object that holds the information required
+                const singleListing = {
+                    serviceid: service.Service_ID,
+                    name: service.Title,
+                    location: service.Location,
+                    category: service.Category,
+                    description: service.Description,
+                    imageFiles: [], // Create empty array for holding filenames for the images
+                    profileid: service.Profile_ID,
+                };
+                results4.forEach((element) => { // For each result of the photo query (results3):
+                    const filename = `${uuid()}.${element.Extension}`; // Create a filename
+                    singleListing.imageFiles.push(filename); // Add filename to array in singleListing object
+                    // Write the file to the temp directory
+                    fs.writeFile(`app/public/temp/${filename}`, element.Photo_Blob, (err5) => {
+                        if (err5) throw err5;
+                    });
+                });
+                listingResults.push({ singleListing }); // Push completed lising into final array
+                count += 1; // update count
+                if (count === req.services.length) { // Once all the services has been looped through and added
+                    req.session.serviceResults = listingResults; // Save listing results to be used by next function
+                    res.redirect('/search/results'); // Redirect user to a new page
+                }
+            });
+        });
+    } else { // IF there are no results to be displayed
+        req.session.serviceResults = [];
+        res.redirect('/search/results');
+    }
+}
+
+// Post call for after a new search form has been submitted.
+// Will goto findServices THEN renderSearchPage
+router.post('/search', findServices, renderSearchPage, (req, res) => {});
+// This is used to render a new search results page after geting all the results
+
+router.get('/search/results', (req, res) => {
+    const listingResults = req.session.serviceResults; // Results saved in previous function
+    // console.log('search/results', listingResults);
+    res.render('search-results.ejs', { listingResults }); // Render the new page
 });
 
 // Allow the router object to be used in other js files.
