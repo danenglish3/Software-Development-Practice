@@ -13,7 +13,7 @@
     <h1>Edit Profile</h1>
     <!--Upon Submitting the form, make a request with the post method to url /new_profile-->
     <form method="post" action="/edit_profile" enctype="multipart/form-data" id="editProfileForm">
-        <input type="hidden" name="accountID" value="<%= accountid %>">
+        <input type="hidden" name="accountID" value="<%= accountID %>">
         <input type="hidden" name="photoID" value="<%= prevPhoto %>">
         <label>Name</label>
         <br>
@@ -46,6 +46,9 @@
         <label>Profile Image</label>
         <br>
         <input type="file" name="profileImage" accept="image/*">
+        <br>
+        <label>Delete Account?</label>
+        <input type="checkbox" name="profileDelete">
         <br>
         <input type="submit" value="Submit">
     </form>
