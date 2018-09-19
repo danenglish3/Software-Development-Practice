@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" media="screen" href="/css/main.css" />
+    <script src="/js/main.js"></script>
+    <title>Profile</title>
+</head>
+<body>
+    <h1><%= name %></h1>
+    <img src="/temp/<%= image %>" alt="profile picture" width="100">
+    <dl>
+        <dt><strong>Date Joined</strong></dt>
+        <dd>
+            <%= joinDate %>
+        </dd>
+        <dt><strong>Phone</strong></dt>
+        <dd>
+            <%= phone %>
+        </dd>
+        <dt><strong>Address</strong></dt>
+        <dd>
+            <%= street %><br>
+            <%= suburb %><br>
+            <%= city %><br>
+            <%= postcode %>
+        </dd>
+        <dt><strong>About</strong></dt>
+        <dd>
+            <%= description %>
+        </dd>
+    </dl>
+</body>
+</html>
