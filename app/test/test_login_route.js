@@ -39,53 +39,51 @@ describe('Login routes', () => {
         done();
     });
 
-    it('Should return login page', (done) => {       
+    it('Should return login page', (done) => {
         // Read file at the specified path into a string (reading synchonously is OK for testing)
         const file = fs.readFileSync(path.join(__dirname, '../views/login.ejs'), { encoding: 'utf-8' }, (err, contents) => contents);
         // Render view with EJS
         const page = ejs.render(file);
         request(router)
-            //Run a .get request to get the page to render
+            // Run a .get request to get the page to render
             .get('/login')
-            //Write expects for what is expected from the return of get request
+            // Write expects for what is expected from the return of get request
             .expect('Content-Type', 'text/html; charset utf-8')
             .expect(200)
-            .expect(page)
-            done();
-
+            .expect(page);
+        done();
     });
 
-    it('Should return register page', (done) => {       
+    it('Should return register page', (done) => {
         // Read file at the specified path into a string (reading synchonously is OK for testing)
         const file = fs.readFileSync(path.join(__dirname, '../views/register.ejs'), { encoding: 'utf-8' }, (err, contents) => contents);
         // Render view with EJS
         const page = ejs.render(file);
         request(router)
-            //Run a .get request to get the page to render
+            // Run a .get request to get the page to render
             .get('/register')
-            //Write expects for what is expected from the return of get request
+            // Write expects for what is expected from the return of get request
             .expect('Content-Type', 'text/html; charset utf-8')
             .expect(200)
-            .expect(page)
-            done();
-
+            .expect(page);
+        done();
     });
 
-    it('Should post a new user', (done) =>{
-        //Write a sample post request
+    it('Should post a new user', (done) => {
+        // Write a sample post request
         request(app)
-            //Post some data to check the request works
+            // Post some data to check the request works
             .post('/register')
             .send({
                 accountid: 5,
-                name: "testName",
-                password: "testPassword",
-                email: "test@example.com"
+                name: 'testName',
+                password: 'testPassword',
+                email: 'test@example.com',
             })
-            //Expect a 200 status response 
-            .end((err, res) => {
-                expect(200)
+            // Expect a 200 status response
+            .end(() => {
+                expect(200);
                 done();
-        });
+            });
     });
 });
