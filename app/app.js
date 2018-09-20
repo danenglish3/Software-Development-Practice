@@ -24,6 +24,7 @@ app.use(require('./routes/listing_route'));
 app.use(require('./routes/login_route'));
 app.use(require('./routes/search_route'));
 app.use(require('./routes/profile_route'));
+app.use(require('./routes/account_routes'));
 
 // Start server
 app.listen(PORT, () => {
