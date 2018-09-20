@@ -63,7 +63,6 @@ router.post('/register', (req, res) => {
     // Getting registration information for post request from forms
 
     const user = {
-        account_id: 1,
         email: req.body.registerEmail,
         password: req.body.registerPassword,
         name: req.body.registerName,
