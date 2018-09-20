@@ -4,8 +4,9 @@
         "linebreak-style": 0,
         "no-console": "off",
         "indent": ["error", 4],
-        "max-len": ["error", { "code": 120 }],
-        "no-case-declarations": "off"
+        "max-len": ["error", { "code": 300 }],
+        "no-case-declarations": "off",
+        "no-lonely-if": "off"
     },
     "env": {
         "mocha": true,
