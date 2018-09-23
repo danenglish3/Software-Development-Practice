@@ -34,7 +34,7 @@ describe('Search Route', () => {
 
 
     // Begin test for rendering a search page determined by location
-    it('Should return Search with a Location, category as is', (done) => {
+    it('Should return a Search using a keyword, category and location', (done) => {
         // Get express's router functions
         const router = express.Router();
         const listingResults = [];
