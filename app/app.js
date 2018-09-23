@@ -26,6 +26,22 @@ app.use(require('./routes/search_route'));
 app.use(require('./routes/profile_route'));
 app.use(require('./routes/account_routes'));
 
+// Any URLs, except for the ones in the routers specified above, will trigger the Express Error Handler
+app.get('*', (req, res, next) => {
+    next(new Error('404'));
+});
+
+// Express Error Handler
+app.use((error, req, res, next) => {
+    if (error.message === '404') {
+        res.status(404).send('404 Error - Page Not Found');
+    } else {
+        console.log(error);
+        res.status(500).send('An error has occured');
+    }
+    next();
+});
+
 // Start server
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT} at 'http://localhost:${PORT}' (CTRL + C to exit)`);
