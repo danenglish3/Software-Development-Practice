@@ -35,10 +35,15 @@ app.get('*', (req, res, next) => {
 app.use((error, req, res, next) => {
     if (error.message === '404') {
         res.status(404).send('404 Error - Page Not Found');
+    } else if (error.message === '401') {
+        res.status(401).send('401 Error - Unauthorized Access');
+    } else if (error.message === '400') {
+        res.status(400).send('400 Error - Bad Request');
     } else {
         console.log(error);
         res.status(500).send('An error has occured');
     }
+
     next();
 });
 

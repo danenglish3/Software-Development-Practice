@@ -5,62 +5,72 @@ const connection = require('../database.js');
 const router = express.Router();
 
 // Serve the get request with the login.ejs page
-router.get('/account/:id', (req, res) => {
+router.get('/account/:id', (req, res, next) => {
+    if (isNaN(req.params.id)) {
+        next(new Error('404'));
+    } else {
     // Query the account that is to be displayed
-    const queryAccount = `SELECT * FROM AccountHolder where Account_id = ${req.params.id}`;
-    connection.query(queryAccount, (error, results) => {
-        if (error) {
-            res.send({
-                code: 400,
-            });
-        } else {
+        const queryAccount = `SELECT * FROM AccountHolder where Account_id = ${req.params.id}`;
+        connection.query(queryAccount, (error, results) => {
+            if (error) {
+                next(new Error('400'));
+            } else {
             // If query doesn't throw an error create an object with user values
-            const account = {
-                id: req.params.id,
-                name: results[0].Name,
-                email: results[0].Email,
-                password: results[0].Password,
-            };
-            // Serve the page using values from account for template
-            res.render('account.ejs', account);
-        }
-    });
+                const account = {
+                    id: req.params.id,
+                    name: results[0].Name,
+                    email: results[0].Email,
+                    password: results[0].Password,
+                };
+                // Serve the page using values from account for template
+                res.render('account.ejs', account);
+            }
+        });
+    }
 });
 
 // GET Request to edit an account with a specific ID
-router.get('/account/:id/edit', (req, res) => {
-    // Run select query to get specified user
-    const queryAccount = `SELECT * FROM AccountHolder where Account_id = ${req.params.id}`;
-    connection.query(queryAccount, (err, results) => {
-        if (err) throw err;
-        // Create account object with information pulled from DB
-        const account = {
-            id: req.params.id,
-            prevName: results[0].Name,
-            prevEmail: results[0].Email,
-            prevPword: results[0].Password,
-        };
-        // Render page using information stored in account
-        res.render('edit_account.ejs', account);
-    });
+router.get('/account/:id/edit', (req, res, next) => {
+    if (isNaN(req.params.id)) {
+        next(new Error('404'));
+    } else {
+        // Run select query to get specified user
+        const queryAccount = `SELECT * FROM AccountHolder where Account_id = ${req.params.id}`;
+        connection.query(queryAccount, (err, results) => {
+            if (err) throw err;
+            // Create account object with information pulled from DB
+            const account = {
+                id: req.params.id,
+                prevName: results[0].Name,
+                prevEmail: results[0].Email,
+                prevPword: results[0].Password,
+            };
+            // Render page using information stored in account
+            res.render('edit_account.ejs', account);
+        });
+    }
 });
 
 // POST Request for editing an account page
 router.post('/account/:id/edit', (req, res) => {
+    if (isNaN(req.params.id)) {
+        next(new Error('404'));
+    } else {
     // Pull data to be used for update from fields
-    const account = {
-        name: req.body.accountName,
-        email: req.body.accountEmail,
-    };
-    // Run update query
-    const updateAccount = `UPDATE AccountHolder SET ? WHERE Account_id = ${req.params.id}`;
-    connection.query(updateAccount, account, (err) => {
-        if (err) throw (err);
-        res.send({
-            code: 200,
-            message: 'Account Updated',
+        const account = {
+            name: req.body.accountName,
+            email: req.body.accountEmail,
+        };
+        // Run update query
+        const updateAccount = `UPDATE AccountHolder SET ? WHERE Account_id = ${req.params.id}`;
+        connection.query(updateAccount, account, (err) => {
+            if (err) throw (err);
+            res.send({
+                code: 200,
+                message: 'Account Updated',
+            });
         });
-    });
+    }
 });
 
 // Serve the GET request for the change password page with a specific ID
@@ -104,10 +114,7 @@ router.post('/change_password/:id', (req, res, next) => {
                 }
             } else {
                 // If the password provided isn't correct send unauthorized response code
-                res.send({
-                    code: 401,
-                    message: 'Incorrect password provided',
-                });
+                next(new Error('401'));
             }
         });
     }
