@@ -10,7 +10,7 @@ router.get('/login', (req, res) => {
 });
 
 // Create POST request to serve when Login button clicked
-router.post('/login', (req, res) => {
+router.post('/login', (req, res, next) => {
     // Create local "loginUser" that stores information input in respective fields
     const loginUser = {
         email: req.body.loginEmail,
@@ -23,10 +23,7 @@ router.post('/login', (req, res) => {
     connection.query(loginQuery, (error, results) => {
         // Check if an error is thrown and log if so
         if (error) {
-            console.log(error);
-            res.send({
-                code: 400,
-            });
+            next(new Error('400'));
         } else {
             // First check checks to see if a user was returned that matched input email
             if (results[0] != null) {
@@ -46,10 +43,7 @@ router.post('/login', (req, res) => {
                 }
             } else {
                 // Else if no user was returned from SQL Query return code
-                res.send({
-                    code: 400,
-                    message: 'not a registered user',
-                });
+                next(new Error('400'));
             }
         }
     });
