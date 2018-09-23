@@ -96,21 +96,29 @@ router.post('/change_password/:id', (req, res, next) => {
         connection.query(queryAccount, (err, results) => {
             if (err) throw (err);
             const account = {
-                id: req.params.id,
-                password: results[0].Password,
-                name: results[0].Name,
-                email: results[0].Email,
+                account_id: req.params.id,
+                Password: results[0].Password,
+                Name: results[0].Name,
+                Email: results[0].Email,
             };
                 // Check to see if password is correct
-            if (account.password === req.body.oldPassword) {
+            if (account.Password === req.body.oldPassword) {
                 // Check to see if new password matches repeated one and is different to old password
                 if ((req.body.newPassword === req.body.repeatPassword) && (req.body.newPassword !== account.password)) {
-                    const updateQuery = `UPDATE AccountHolder SET Password = ${req.body.newPassword} WHERE Account_id = ${req.params.id}`;
-                    connection.query(updateQuery);
-                    res.send({
-                        code: 200,
-                        message: 'Password updated',
+                    account.Password = req.body.newPassword;
+                    const updateQuery = `UPDATE AccountHolder SET ? WHERE Account_id = ${req.params.id}`;
+                    connection.query(updateQuery, account, (err2) => {
+                        if (err2) {
+                            next(new Error('500'));
+                        } else {
+                            res.send({
+                                code: 200,
+                                message: 'Password updated',
+                            });
+                        }
                     });
+                } else {
+                    next(new Error('400'));
                 }
             } else {
                 // If the password provided isn't correct send unauthorized response code
