@@ -13,7 +13,8 @@
     <h1>Edit Listing</h1>
     <!--Upon Submitting the form, make a request with the post method to url /new-listing-->
     <form method="post" action="/edit_listing" enctype="multipart/form-data" id="newListingForm">
-        <input type="hidden" name="listingID" value="<%= id %>">
+        <input type="hidden" name="accountID" value="<%= accountID %>">
+        <input type="hidden" name="listingID" value="<%= listingID %>">
         <label>Title</label>
         <br>
         <input type="text" name="listingTitle" value="<%= prevTitle %>" required>
@@ -43,6 +44,7 @@
         <br>
         <label>Delete Listing</label>
         <input type="checkbox" name="listingDelete">
+        <br>
         <input type="submit" value="Submit">
     </form>
 

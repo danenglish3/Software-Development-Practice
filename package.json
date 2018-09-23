@@ -19,13 +19,14 @@
   "homepage": "https://github.com/mps0494/dcjs#readme",
   "devDependencies": {
     "chai": "^4.1.2",
+    "chai-http": "^4.2.0",
     "eslint": "^5.5.0",
     "eslint-config-airbnb": "^17.1.0",
     "eslint-plugin-import": "^2.14.0",
     "eslint-plugin-jsx-a11y": "^6.1.1",
     "eslint-plugin-react": "^7.11.1",
     "mocha": "^5.2.0",
-    "nodemon": "^1.18.3",
+    "nodemon": "^1.18.4",
     "supertest": "^3.1.0"
   },
   "dependencies": {
@@ -35,7 +36,8 @@
     "express": "^4.16.3",
     "express-session": "^1.15.6",
     "multer": "^1.3.1",
-    "mysql": "github:mysqljs/mysql",
+    "mysql": "^2.16.0",
+    "npm": "^6.4.1",
     "promise": "^8.0.1",
     "promise-mysql": "^3.3.1",
     "uuid": "^3.3.2"
