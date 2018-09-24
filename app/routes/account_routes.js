@@ -14,7 +14,7 @@ router.get('/account/:id', (req, res, next) => {
         connection.query(queryAccount, (err, results) => {
             if (err) {
                 next(new Error('500'));
-            } else if (!results.length){
+            } else if (!results.length) {
                 next(new Error('404'));
             } else {
             // If query doesn't throw an error create an object with user values
@@ -53,7 +53,7 @@ router.get('/account/:id/edit', (req, res, next) => {
                 };
                 // Render page using information stored in account
                 res.render('edit_account.ejs', account);
-            }   
+            }
         });
     }
 });
@@ -74,10 +74,8 @@ router.post('/account/:id/edit', (req, res, next) => {
             if (err) {
                 next(new Error('500'));
             } else {
-                res.send({
-                    code: 200,
-                    message: 'Account Updated',
-                });
+                res.status(200);
+                res.redirect(`/account/${req.params.id}`);
             }
         });
     }
@@ -96,7 +94,6 @@ router.get('/change_password/:id', (req, res, next) => {
                 next(new Error('500'));
             } else if (!results.length) { // If no error is thrown on SQL Query check if requested ID is valid
                 next(new Error('404'));
-
             } else {
                 results[0].id = req.params.id;
                 // Render page using ID from the account
@@ -131,10 +128,8 @@ router.post('/change_password/:id', (req, res, next) => {
                         if (err2) {
                             next(new Error('500'));
                         } else {
-                            res.send({
-                                code: 200,
-                                message: 'Password updated',
-                            });
+                            res.status(200);
+                            res.redirect(`/account/${req.params.id}`);
                         }
                     });
                 } else {
