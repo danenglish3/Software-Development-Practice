@@ -53,7 +53,7 @@ router.get('/register', (req, res) => {
     res.render('register.ejs');
 });
 
-router.post('/register', (req, res) => {
+router.post('/register', (req, res, next) => {
     // Getting registration information for post request from forms
 
     const user = {
@@ -70,12 +70,7 @@ router.post('/register', (req, res) => {
         // Catch error if it's thrown on account creation
         if (error) {
             // respond with a code and message if error is thrown
-            console.log('Error', error);
-            console.log(user.email, user.name, user.password);
-            res.send({
-                code: 400,
-                message: 'creation failed',
-            });
+            next(new Error('500'));
         } else {
             // send response with successful code and message if user is created
             res.send({

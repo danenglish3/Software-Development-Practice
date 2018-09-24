@@ -11,9 +11,11 @@ router.get('/account/:id', (req, res, next) => {
     } else {
     // Query the account that is to be displayed
         const queryAccount = `SELECT * FROM AccountHolder where Account_id = ${req.params.id}`;
-        connection.query(queryAccount, (error, results) => {
-            if (error) {
-                next(new Error('400'));
+        connection.query(queryAccount, (err, results) => {
+            if (err) {
+                next(new Error('500'));
+            } else if (!results.length){
+                next(new Error('404'));
             } else {
             // If query doesn't throw an error create an object with user values
                 const account = {
@@ -37,22 +39,27 @@ router.get('/account/:id/edit', (req, res, next) => {
         // Run select query to get specified user
         const queryAccount = `SELECT * FROM AccountHolder where Account_id = ${req.params.id}`;
         connection.query(queryAccount, (err, results) => {
-            if (err) throw err;
-            // Create account object with information pulled from DB
-            const account = {
-                id: req.params.id,
-                prevName: results[0].Name,
-                prevEmail: results[0].Email,
-                prevPword: results[0].Password,
-            };
-            // Render page using information stored in account
-            res.render('edit_account.ejs', account);
+            if (err) {
+                next(new Error('500'));
+            } else if (!results.length) {
+                next(new Error('404'));
+            } else {
+                // Create account object with information pulled from DB
+                const account = {
+                    id: req.params.id,
+                    prevName: results[0].Name,
+                    prevEmail: results[0].Email,
+                    prevPword: results[0].Password,
+                };
+                // Render page using information stored in account
+                res.render('edit_account.ejs', account);
+            }   
         });
     }
 });
 
 // POST Request for editing an account page
-router.post('/account/:id/edit', (req, res) => {
+router.post('/account/:id/edit', (req, res, next) => {
     if (isNaN(req.params.id)) {
         next(new Error('404'));
     } else {
@@ -64,11 +71,14 @@ router.post('/account/:id/edit', (req, res) => {
         // Run update query
         const updateAccount = `UPDATE AccountHolder SET ? WHERE Account_id = ${req.params.id}`;
         connection.query(updateAccount, account, (err) => {
-            if (err) throw (err);
-            res.send({
-                code: 200,
-                message: 'Account Updated',
-            });
+            if (err) {
+                next(new Error('500'));
+            } else {
+                res.send({
+                    code: 200,
+                    message: 'Account Updated',
+                });
+            }
         });
     }
 });
@@ -78,11 +88,21 @@ router.get('/change_password/:id', (req, res, next) => {
     if (isNaN(req.params.id)) {
         next(new Error('404'));
     } else {
-        const account = {
-            id: req.params.id,
-        };
-        // Render page using ID from the account
-        res.render('change_password.ejs', account);
+        // Run Query to pull user with :id from DB
+        const queryAccount = `SELECT * FROM AccountHolder where Account_id = ${req.params.id}`;
+        connection.query(queryAccount, (err, results) => {
+            // Check if error is thrown when SQL Query runs and return 500 code if it is
+            if (err) {
+                next(new Error('500'));
+            } else if (!results.length) { // If no error is thrown on SQL Query check if requested ID is valid
+                next(new Error('404'));
+
+            } else {
+                results[0].id = req.params.id;
+                // Render page using ID from the account
+                res.render('change_password.ejs', results[0]);
+            }
+        });
     }
 });
 
@@ -101,7 +121,7 @@ router.post('/change_password/:id', (req, res, next) => {
                 Name: results[0].Name,
                 Email: results[0].Email,
             };
-                // Check to see if password is correct
+            // Check to see if password is correct
             if (account.Password === req.body.oldPassword) {
                 // Check to see if new password matches repeated one and is different to old password
                 if ((req.body.newPassword === req.body.repeatPassword) && (req.body.newPassword !== account.password)) {
