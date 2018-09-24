@@ -73,12 +73,16 @@ function findServices(req, res, next) {
     }
     const sql = `SELECT * FROM website_user.Service WHERE ${conditionString}`; // SQL query for getting srvices
     connection.query(sql, (err, results) => {
-        req.services = results; // Save service results in req to be used in next function
-        return next(); // Call next function, renderSearchPage
+        if (err) {
+            next(new Error('500'));
+        } else {
+            req.services = results; // Save service results in req to be used in next function
+            return next(); // Call next function, renderSearchPage
+        }
     });
 }
 
-function renderSearchPage(req, res) {
+function renderSearchPage(req, res, next) {
     const listingResults = []; // Final listing results array
     let count = 0; // Count of how many results there are
     // If the results of the query come back with nothing
@@ -90,30 +94,34 @@ function renderSearchPage(req, res) {
         req.services.forEach((service) => { // For each service found in the previous function
         // Create a statement that will gather all the photos that are related to a aervice
             const queryPhotos = `SELECT * FROM Photo WHERE Service_ID = ${service.Service_ID}`;
-            connection.query(queryPhotos, (err4, results4) => {
-            // Create a singleListing object that holds the information required
-                const singleListing = {
-                    serviceid: service.Service_ID,
-                    name: service.Title,
-                    location: service.Location,
-                    category: service.Category,
-                    description: service.Description,
-                    imageFiles: [], // Create empty array for holding filenames for the images
-                    profileid: service.Profile_ID,
-                };
-                results4.forEach((element) => { // For each result of the photo query (results3):
-                    const filename = `${uuid()}.${element.Extension}`; // Create a filename
-                    singleListing.imageFiles.push(filename); // Add filename to array in singleListing object
-                    // Write the file to the temp directory
-                    fs.writeFile(`app/public/temp/${filename}`, element.Photo_Blob, (err5) => {
-                        if (err5) throw err5;
+            connection.query(queryPhotos, (err, results4) => {
+                if (err) {
+                    next(new Error('500'));
+                } else {
+                    // Create a singleListing object that holds the information required
+                    const singleListing = {
+                        serviceid: service.Service_ID,
+                        name: service.Title,
+                        location: service.Location,
+                        category: service.Category,
+                        description: service.Description,
+                        imageFiles: [], // Create empty array for holding filenames for the images
+                        profileid: service.Profile_ID,
+                    };
+                    results4.forEach((element) => { // For each result of the photo query (results3):
+                        const filename = `${uuid()}.${element.Extension}`; // Create a filename
+                        singleListing.imageFiles.push(filename); // Add filename to array in singleListing object
+                        // Write the file to the temp directory
+                        fs.writeFile(`app/public/temp/${filename}`, element.Photo_Blob, (err5) => {
+                            if (err5) throw err5;
+                        });
                     });
-                });
-                listingResults.push({ singleListing }); // Push completed lising into final array
-                count += 1; // update count
-                if (count === req.services.length) { // Once all the services has been looped through and added
-                    req.session.serviceResults = listingResults; // Save listing results to be used by next function
-                    res.redirect('/search/results'); // Redirect user to a new page
+                    listingResults.push({ singleListing }); // Push completed lising into final array
+                    count += 1; // update count
+                    if (count === req.services.length) { // Once all the services has been looped through and added
+                        req.session.serviceResults = listingResults; // Save listing results to be used by next function
+                        res.redirect('/search/results'); // Redirect user to a new page
+                    }
                 }
             });
         });
