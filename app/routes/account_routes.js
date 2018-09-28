@@ -1,5 +1,6 @@
 // Including dependencies
 const express = require('express');
+const cookieParser = require('cookie-parser');
 const connection = require('../database.js');
 
 const router = express.Router();
@@ -38,11 +39,14 @@ router.get('/account/:id/edit', (req, res, next) => {
     } else {
         // Run select query to get specified user
         const queryAccount = `SELECT * FROM AccountHolder where Account_id = ${req.params.id}`;
+        const sessionUser = req.cookies.SessionInfo;
         connection.query(queryAccount, (err, results) => {
             if (err) {
                 next(new Error('500'));
             } else if (!results.length) {
                 next(new Error('404'));
+            } else if ((sessionUser.Account_ID.toString() !== req.params.id) || (req.cookies.SessionInfo === null)) {
+                next(new Error('401'));
             } else {
                 // Create account object with information pulled from DB
                 const account = {
