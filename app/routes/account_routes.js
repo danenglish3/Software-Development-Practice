@@ -12,11 +12,14 @@ router.get('/account/:id', (req, res, next) => {
     } else {
     // Query the account that is to be displayed
         const queryAccount = `SELECT * FROM AccountHolder where Account_id = ${req.params.id}`;
+        const sessionUser = req.cookies.SessionInfo;
         connection.query(queryAccount, (err, results) => {
             if (err) {
                 next(new Error('500'));
             } else if (!results.length) {
                 next(new Error('404'));
+            } else if ((sessionUser.Account_ID.toString() !== req.params.id) || (!sessionUser)) {
+                next(new Error('401'));
             } else {
             // If query doesn't throw an error create an object with user values
                 const account = {
@@ -92,12 +95,15 @@ router.get('/change_password/:id', (req, res, next) => {
     } else {
         // Run Query to pull user with :id from DB
         const queryAccount = `SELECT * FROM AccountHolder where Account_id = ${req.params.id}`;
+        const sessionUser = req.cookies.SessionInfo;
         connection.query(queryAccount, (err, results) => {
             // Check if error is thrown when SQL Query runs and return 500 code if it is
             if (err) {
                 next(new Error('500'));
             } else if (!results.length) { // If no error is thrown on SQL Query check if requested ID is valid
                 next(new Error('404'));
+            } else if ((sessionUser.Account_ID.toString() !== req.params.id) || (!sessionUser)) {
+                next(new Error('401'));
             } else {
                 results[0].id = req.params.id;
                 // Render page using ID from the account
