@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" media="screen" href="/css/main.css" />
+    <script src="/js/main.js"></script>
+    <title>Edit Account</title>
+</head>
+<body>
+    <form method = "POST" action = "/account/<%= id %>/edit" enctype = "multipart/form-data" id = "editAccountForm">
+    <label>Name</label>
+    <br>
+    <input type = "text" name = "accountName" value = "<%= prevName %>"">
+    <br>
+    <label>Password</label>
+    <label>Email</label>
+    <br>
+    <input type = "text" name = "accountEmail" value = "<%= prevEmail %>">
+    <br>
+    <input type = "submit" value = "Submit">
+    </form>
+
+    <form method = "GET" action = "/change_password/<%= id %>">
+        <input type = "submit" value = "Change Password">
+    </form>
+    
+    <form method = "GET" action = "/account/<%= id %>">
+        <input type = "submit" value = "Cancel">
+    </form>
+    
+</body>

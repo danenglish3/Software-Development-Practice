@@ -66,38 +66,103 @@ describe('Listing Routes', () => {
             imageFiles: ['no_img.png'],
         };
         app.post('/new_listing', (req, res) => {
-            for (const entry in req.body) { // eslint-disable-line
-                expect(newData.entry).to.equal(req.body.entry); // Check if requested data reaches the express server
-            }
-            // Once sample data has been retrieved:
+            expect(newData.title).to.equal(req.body.title);
+            expect(newData.author).to.equal(req.body.author);
+            expect(newData.location).to.equal(req.body.location);
+            expect(newData.category).to.equal(req.body.category);
+            expect(newData.description).to.equal(req.body.description);
+            expect(newData.imageFiles[0]).to.equal(req.body.imageFiles);
+
+            // Create listing object
             const listing = { // Create a listing object
                 serviceid: (sampleData.length + 1).toString(), // Create new ID
-                title: req.body.listingTitle, // Get form data from the body of the post request
-                author: req.body.listingAuthor,
-                location: req.body.listingLocation,
-                category: req.body.listingCatergory,
-                description: req.body.listingDescription,
-                imageFiles: [req.body.listingImages],
+                title: req.body.title, // Get form data from the body of the post request
+                author: req.body.author,
+                location: req.body.location,
+                category: req.body.category,
+                description: req.body.description,
+                imageFiles: [req.body.imageFiles],
             };
 
+            // Save listing object
             sampleData.push(listing); // Add the listing to the sample data
 
-            for (const entry in req.body) { // eslint-disable-line
-                expect(sampleData[1].entry).to.equal(req.body.entry); // Check if data has updated
-            }
+            // Check if listing object has been saved
+            expect(sampleData[1].title).to.equal(req.body.title);
+            expect(sampleData[1].author).to.equal(req.body.author);
+            expect(sampleData[1].location).to.equal(req.body.location);
+            expect(sampleData[1].category).to.equal(req.body.category);
+            expect(sampleData[1].description).to.equal(req.body.description);
+            expect(sampleData[1].imageFiles[0]).to.equal(req.body.imageFiles);
 
-            res.json(listing).status(200);
+            res.json(sampleData[1]).status(200);
         });
 
         // Make a post request with the fields
         request(app).post('/new_listing')
-            .field('listingTitle', newData.title)
-            .field('listingAuthor', newData.author)
-            .field('listingLocation', newData.location)
-            .field('listingCatergory', newData.category)
-            .field('listingDescription', newData.description)
-            .field('listingImages', newData.imageFiles[0])
+            .field('title', newData.title)
+            .field('author', newData.author)
+            .field('location', newData.location)
+            .field('category', newData.category)
+            .field('description', newData.description)
+            .field('imageFiles', newData.imageFiles[0])
             .expect(200, newData) // Check if response is successful and the response data matches
             .end(done);
+    });
+
+    it('Should return updated listing', (done) => {
+        const newData = {
+            serviceid: (sampleData.length + 1).toString(), // Create new ID
+            title: 'Updated Title', // Get form data from the body of the post request
+            author: 'Updated Author',
+            location: 'Updated Location',
+            category: 'Updated Catergory',
+            description: 'Updated Description',
+            imageFiles: ['no_img.png'],
+        };
+        app.post('/edit_listing', (req, res) => {
+            expect(newData.title).to.equal(req.body.title);
+            expect(newData.author).to.equal(req.body.author);
+            expect(newData.location).to.equal(req.body.location);
+            expect(newData.category).to.equal(req.body.category);
+            expect(newData.description).to.equal(req.body.description);
+            expect(newData.imageFiles[0]).to.equal(req.body.imageFiles);
+
+            sampleData[0].title = req.body.title;
+            sampleData[0].author = req.body.author;
+            sampleData[0].location = req.body.location;
+            sampleData[0].category = req.body.category;
+            sampleData[0].description = req.body.description;
+            sampleData[0].imageFiles[0] = req.body.imageFiles;
+
+            // Check if listing object has been saved
+            expect(sampleData[0].title).to.equal(req.body.title);
+            expect(sampleData[0].author).to.equal(req.body.author);
+            expect(sampleData[0].location).to.equal(req.body.location);
+            expect(sampleData[0].category).to.equal(req.body.category);
+            expect(sampleData[0].description).to.equal(req.body.description);
+            expect(sampleData[0].imageFiles[0]).to.equal(req.body.imageFiles);
+
+            res.json(sampleData[0]).status(200);
+        });
+
+        // Make a post request with the fields
+        request(app).post('/edit_listing')
+            .field('title', newData.title)
+            .field('author', newData.author)
+            .field('location', newData.location)
+            .field('category', newData.category)
+            .field('description', newData.description)
+            .field('imageFiles', newData.imageFiles[0])
+            .expect(200) // Check if response is successful and the response data matches
+            .end((err, res) => {
+                expect(newData.title).to.equal(res.body.title);
+                expect(newData.author).to.equal(res.body.author);
+                expect(newData.location).to.equal(res.body.location);
+                expect(newData.category).to.equal(res.body.category);
+                expect(newData.description).to.equal(res.body.description);
+                expect(newData.imageFiles[0]).to.equal(res.body.imageFiles[0]);
+                done();
+            });
     });
 });

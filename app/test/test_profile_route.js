@@ -63,6 +63,29 @@ describe('Profile Routes', () => { // Test profile routes
             .end(done);
     });
 
+    // Test POST route with delete enabled
+    it('Should return request to delete', (done) => {
+        app.post('/edit_profile', (req, res) => { // Define POST route
+            expect(req.body.delete === 'on');
+            if (req.body.delete === 'on') {
+                sampleData.name = null; // Update the old data with the new data
+                sampleData.image = null;
+                sampleData.phone = null;
+                sampleData.street = null;
+                sampleData.suburb = null;
+                sampleData.city = null;
+                sampleData.postcode = null;
+                sampleData.description = null;
+            }
+            res.json(sampleData).status(200); // Send the updated data back
+        });
+
+        request(app).post('/edit_profile')
+            .field('delete', 'on') // Submit new data
+            .expect(200, sampleData) // Check if response is successful and the response data matches
+            .end(done);
+    });
+
     // Test POST route
     it('Should return updated profile information', (done) => {
         const newData = { // Define some new data
@@ -77,9 +100,15 @@ describe('Profile Routes', () => { // Test profile routes
         };
 
         app.post('/edit_profile', (req, res) => { // Define POST route
-            for (const entry in req.body) { // eslint-disable-line
-                expect(newData.entry).to.equal(req.body.entry); // Check if requested data reaches the express server
-            }
+            // Check if data arrived
+            expect(newData.name).to.equal(req.body.name);
+            expect(newData.image).to.equal(req.body.image);
+            expect(newData.phone).to.equal(req.body.phone);
+            expect(newData.street).to.equal(req.body.street);
+            expect(newData.suburb).to.equal(req.body.suburb);
+            expect(newData.city).to.equal(req.body.city);
+            expect(newData.postcode).to.equal(req.body.postcode);
+            expect(newData.description).to.equal(req.body.description);
 
             sampleData.name = req.body.name; // Update the old data with the new data
             sampleData.image = req.body.image;
@@ -90,9 +119,15 @@ describe('Profile Routes', () => { // Test profile routes
             sampleData.postcode = req.body.postcode;
             sampleData.description = req.body.description;
 
-            for (const entry in req.body) { // eslint-disable-line
-                expect(sampleData.entry).to.equal(req.body.entry); // Check if data has updated
-            }
+            // Check if data has updated
+            expect(sampleData.name).to.equal(req.body.name);
+            expect(sampleData.image).to.equal(req.body.image);
+            expect(sampleData.phone).to.equal(req.body.phone);
+            expect(sampleData.street).to.equal(req.body.street);
+            expect(sampleData.suburb).to.equal(req.body.suburb);
+            expect(sampleData.city).to.equal(req.body.city);
+            expect(sampleData.postcode).to.equal(req.body.postcode);
+            expect(sampleData.description).to.equal(req.body.description);
 
             res.json(sampleData).status(200); // Send the updated data back
         });

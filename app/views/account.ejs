@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" media="screen" href="/css/main.css" />
+    <script src="/js/main.js"></script>
+    <title>Profile</title>
+</head>
+<body>
+    <dl>
+        <dt><strong>Name</strong></dt>
+        <dd>
+            <%= name %>
+        </dd>
+        <dt><strong>Email</strong></dt>
+        <dd>
+            <%= email %>
+        </dd>
+        <dt><strong>Password</strong></dt>
+        <dd>
+            <%= password %>
+        </dd>
+      
+        <form method="GET" action="/account/<%= id %>/edit">
+            <input type="submit" value="Edit" />
+        </form>
+
+    </dl>
+</body>
