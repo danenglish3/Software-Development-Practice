@@ -33,18 +33,18 @@ router.post('/login', (req, res, next) => {
                 if (results[0].Password === loginUser.password) {
                     // If all checks pass then create a JSON Web Token for the users session that cna be used to verify their identity.
                     jwt.sign({
-                        exp: Math.floor(Date.now() / 1000 + (60 * 60)),
-                        data: results,
-                    }, secretKey, (err) => {
+                        data: results[0],
+                    }, secretKey, (err, Token) => {
                         if (err) {
                             next(new Error(500));
+                        } else {
+                            res.cookie('SessionInfo', Token, { maxAge: 900000 });
+                            res.status(200);
+                            res.redirect('/');
+                            res.end();
                         }
                     });
                     // Send cookie storing user session information to browser to be used for checks.
-                    res.cookie('SessionInfo', results[0], { maxAge: 900000 });
-                    res.status(200);
-                    res.redirect('/');
-                    res.end();
                 } else {
                     // Else if user exists but passwords don't match send relevant error code
                     next(new Error('401'));
