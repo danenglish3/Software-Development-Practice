@@ -37,5 +37,9 @@
     <%for (var image in imageFiles){%>
         <img src="/temp/<%= imageFiles[image] %>" alt="" height="100">
     <%}%>
+
+    <form method="GET" action="/listing/<%= serviceid %>/edit">
+        <input type="submit" value="Edit" />
+    </form>
 </body>
 </html>
