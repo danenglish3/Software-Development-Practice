@@ -1,8 +1,10 @@
 // Including dependencies
 const express = require('express');
+const jwt = require('jsonwebtoken');
 const connection = require('../database.js');
 
 const router = express.Router();
+const secretKey = 'dcjscomp602';
 
 // Serve the get request with the login.ejs page
 router.get('/login', (req, res) => {
@@ -29,10 +31,20 @@ router.post('/login', (req, res, next) => {
             if (results[0] != null) {
                 // if a user was returned, make the check to see if password matches input password
                 if (results[0].Password === loginUser.password) {
-                    // Send success code
-                    res.status(200);
-                    res.redirect('/');
-                    res.end();
+                    // If all checks pass then create a JSON Web Token for the users session that cna be used to verify their identity.
+                    jwt.sign({
+                        data: results[0],
+                    }, secretKey, (err, Token) => {
+                        if (err) {
+                            next(new Error(500));
+                        } else {
+                            res.cookie('SessionInfo', Token, { maxAge: 900000 });
+                            res.status(200);
+                            res.redirect('/');
+                            res.end();
+                        }
+                    });
+                    // Send cookie storing user session information to browser to be used for checks.
                 } else {
                     // Else if user exists but passwords don't match send relevant error code
                     next(new Error('401'));
