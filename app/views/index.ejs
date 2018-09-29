@@ -14,11 +14,17 @@
     <form method="get" action="/search" enctype="multipart/form-data" id="indexToSearch">
         <input type="submit" value="Go!">
     </form>
-    <form method = "GET" action = "/login" enctype = "multipart/form-data" id = "indexToLogin">
-        <input type = "submit" value = "Login">
-    </form>
-    <form method = "GET" action = "/register" enctype= "multipart/form-data" id = "indexToRegister">
-        <input type = "submit" value = "Register">
-    </form>
+    <% if (isLogin === true) { %>
+        <form method = "GET" action = "/login" enctype = "multipart/form-data" id = "indexToLogin">
+            <input type = "submit" value = "Login">
+        </form>
+        <form method = "GET" action = "/register" enctype= "multipart/form-data" id = "indexToRegister">
+            <input type = "submit" value = "Register">
+        </form>
+    <%} else {%>
+        <form method = "POST" action = "/logout" enctype = "multipart/form-data" id = "logout">
+            <input type = "submit" value = "Logout">
+        </form>
+    <%}%>
 </body>
 </html>

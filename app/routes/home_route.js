@@ -6,7 +6,11 @@ const express = require('express');
 const router = express.Router(); // Get express's router functions
 // Respond to the browsers 'get' request by serving index.html to home URL '/'
 router.get('/', (req, res) => {
-    res.render('index.ejs', { siteName: 'Kiwi Trader' });
+    if (!req.cookies.SessionInfo) {
+        res.render('index.ejs', { siteName: 'Kiwi Trader', isLogin: false });
+    } else {
+        res.render('index.ejs', { siteName: 'Kiwi Trader', isLogin: true });
+    }
 });
 
 // Allow the router object to be used in other js files.
