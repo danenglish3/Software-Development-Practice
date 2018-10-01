@@ -43,6 +43,7 @@ router.get('/listing/:id', (req, res, next) => {
                             // Once the above query is complete:
                             // Create a listing object with property names that correspond to the ejs template
                             const listing = {
+                                page: results[0].title,
                                 title: results[0].Title, // Use the information from the first query (results) to add the title
                                 serviceid: results[0].Service_ID,
                                 location: results[0].Location,
@@ -60,7 +61,7 @@ router.get('/listing/:id', (req, res, next) => {
                                 });
                             });
                             // Now that the listing object is complete, render the HTML using the information from the EJS template
-                            res.render('listing.ejs', listing);
+                            res.render('listing/listing', listing);
                         }
                     });
                 }
@@ -73,7 +74,7 @@ router.get('/listing/:id', (req, res, next) => {
 
 // Respond to the browsers 'get' request by serving new_listing.ejs to URL '/new_listing'
 router.get('/new_listing', (req, res) => {
-    res.render('new_listing.ejs'); // Render the the HTML from the EJS template
+    res.render('listing/new_listing', { page: 'New Listing' }); // Render the the HTML from the EJS template
 });
 
 // Respond to the browsers 'post' to URL '/new_listing' request by saving a new listing
@@ -136,6 +137,7 @@ router.get('/listing/:id/edit', (req, res, next) => {
                     next(err2);
                 } else {
                     const listing = {
+                        page: `Editing ${results[0].Title}`,
                         accountID: results[0].Profile_ID,
                         listingID: results[0].Service_ID,
                         prevTitle: results[0].Title, // Use the information from the first query (results) to add the title
@@ -156,7 +158,7 @@ router.get('/listing/:id/edit', (req, res, next) => {
                         });
                     });
                     // Now that the listing object is complete, render the HTML using the information from the EJS template
-                    res.render('edit_listing.ejs', listing);
+                    res.render('listing/edit_listing', listing);
                 }
             });
         }

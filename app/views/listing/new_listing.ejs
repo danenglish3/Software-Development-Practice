@@ -1,15 +1,14 @@
 <!DOCTYPE html>
 <html>
 
-<head>
-    <meta charset="utf-8" />
-    <title>Listing</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" type="text/css" media="screen" href="/css/main.css" />
-    <script src="/js/main.js"></script>
-</head>
+    <head>
+        <% include ../partials/head %>
+    </head>
 
 <body>
+    <header>
+        <% include ../partials/header %>
+    </header>
     <h1>New Listing</h1>
     <!--Upon Submitting the form, make a request with the post method to url /new-listing-->
     <form method="post" action="/new_listing" enctype="multipart/form-data" id="newListingForm">
@@ -35,7 +34,9 @@
         <br>
         <input type="submit" value="Submit">
     </form>
-
+    <footer class="footer">
+        <% include ../partials/footer %>
+    </footer>
 </body>
 
 </html>

@@ -2,27 +2,27 @@
 <html>
 
 <head>
-    <meta charset="utf-8" />
-    <title>Listing</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" type="text/css" media="screen" href="/css/main.css" />
-    <script src="/js/main.js"></script>
+    <% include ../partials/head %>
 </head>
 
 <body>
+    <header>
+        <% include ../partials/header %>
+    </header>
+
     <h1><%= title %></h1>
     <p>
         <em> <%= serviceid %></em>
         <dl>
-            <dt><strong>Location</strong></dt>
+            <dt>Location</dt>
             <dd>
                 <%= location %>
             </dd>
-            <dt><strong>Author</strong></dt>
+            <dt>Author</dt>
             <dd>
                 <%= author %>
             </dd>
-            <dt><strong>Category</strong></dt>
+            <dt>Category</dt>
             <dd>
                 <%= category %>
             </dd>
@@ -41,5 +41,9 @@
     <form method="GET" action="/listing/<%= serviceid %>/edit">
         <input type="submit" value="Edit" />
     </form>
+
+    <footer class="footer">
+            <% include ../partials/footer %>
+    </footer>
 </body>
 </html>
