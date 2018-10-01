@@ -13,6 +13,7 @@
     <h1>Request a new quote for <%= serviceName %></h1>
     <!--Upon Submitting the form, make a request with the post method to url /new-quote-->
     <form method="post" action="/new_quote" enctype="multipart/form-data" id="newQuoteForm">
+        <input type="hidden" name="serviceID" value="<%= serviceID %>">
         <label>Enter your name</label>
         <br>
         <input type="text" name="quoteName" required>
@@ -27,7 +28,7 @@
         <br>
         <label>Details on quote</label>
         <br>
-        <textarea name="quoteDescription" rows="4" cols="50" form="quoteDescriptionForm" required></textarea> 
+        <textarea rows="4" cols="50" name="quoteDesc" form="newQuoteForm"></textarea> 
         <br>        
         <input type="submit" value="Submit">        
     </form>

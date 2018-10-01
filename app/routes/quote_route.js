@@ -14,10 +14,11 @@ function getService(req, res, next) {
             next(new Error('404'));
         } else {
             req.service = {
+                serviceID: req.params.id,
                 serviceName: results[0].Title,
-                prevProfile: results[0].Profile_ID,
+                profileID: results[0].Profile_ID,
             };
-            console.log('hit else');
+            // console.log('hit else');
         }
         next();
     });
@@ -29,5 +30,26 @@ function renderQuotePage(req, res) {
 }
 
 router.get('/new_quote/:id', getService, renderQuotePage, (req, res) => {});
+
+function insertQuote(req, res, next) {
+    const quoteDetails = {
+        serviceRequestedID: req.body.serviceID,
+        accountRequestedFromID: 12351,
+        phoneNumber: req.body.quoteContact,
+        emailAddress: req.body.quoteEmail,
+        description: req.body.quoteDesc,
+    };
+    console.log(quoteDetails);
+    const insertQuoteStmnt = 'INSERT INTO Quote SET ?';
+    connection.query(insertQuoteStmnt, quoteDetails, (err, results) => {
+        if (err) {
+            next(err);
+        } else {
+            res.end('saved quote');
+        }
+    });
+}
+
+router.post('/new_quote', insertQuote, (req, res) => {});
 
 module.exports = router;
