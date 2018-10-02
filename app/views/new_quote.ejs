@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <title>Listing</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" media="screen" href="/css/main.css" />
+    <script src="/js/main.js"></script>
+</head>
+
+<body>
+    <h1>Request a new quote for <%= serviceName %></h1>
+    <!--Upon Submitting the form, make a request with the post method to url /new-quote-->
+    <form method="post" action="/new_quote" enctype="multipart/form-data" id="newQuoteForm">
+        <input type="hidden" name="serviceID" value="<%= serviceID %>">
+        <label>Enter your name</label>
+        <br>
+        <input type="text" name="quoteName" required>
+        <br>
+        <label>Contact phone number</label>
+        <br>
+        <input type="text" name="quoteContact" required>
+        <br>
+        <label>Prefered email address</label>
+        <br>
+        <input type="text" name="quoteEmail" required>
+        <br>
+        <label>Details on quote</label>
+        <br>
+        <textarea rows="4" cols="50" name="quoteDesc" form="newQuoteForm"></textarea> 
+        <br>        
+        <input type="submit" value="Submit">        
+    </form>
+
+</body>
+
+</html>

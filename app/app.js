@@ -3,6 +3,7 @@ const express = require('express');
 const path = require('path');
 const bodyParser = require('body-parser');
 const multer = require('multer');
+const cookieParser = require('cookie-parser');
 
 /* Creating and running an express server */
 const app = express(); // Initialise express
@@ -17,6 +18,7 @@ app.use(express.static(path.join(__dirname, 'public'))); // Specify the folder w
 app.use(bodyParser.json()); // Parse input text to JSON
 app.use(bodyParser.urlencoded({ extended: true })); // Ensure proper/safe URL encoding
 app.use(multer({ storage: multer.memoryStorage({}) }).any()); // Configure multer to hold uploaded file data in memory
+app.use(cookieParser());
 
 // Mount routes to the express app
 app.use(require('./routes/home_route'));
@@ -25,6 +27,7 @@ app.use(require('./routes/login_route'));
 app.use(require('./routes/search_route'));
 app.use(require('./routes/profile_route'));
 app.use(require('./routes/account_routes'));
+app.use(require('./routes/quote_route'));
 
 // Any URLs, except for the ones in the routers specified above, will trigger the Express Error Handler
 app.get('*', (req, res, next) => {
@@ -43,7 +46,6 @@ app.use((error, req, res, next) => {
         console.log(error);
         res.status(500).send('An error has occured');
     }
-
     next();
 });
 
