@@ -9,7 +9,7 @@ const router = express.Router(); // Get express's router functions
 router.use(session({ secret: 'keyboard cat', cookie: { maxAge: 60000 } })); // Initialize secret?
 
 router.get('/search', (req, res) => { // Initial setup for search page
-    res.render('search.ejs');
+    res.render('search/search.ejs');
 });
 
 // First call after the .post from a new Search
@@ -139,7 +139,7 @@ router.post('/search', findServices, renderSearchPage, (req, res) => {});
 router.get('/search/results', (req, res) => {
     const listingResults = req.session.serviceResults; // Results saved in previous function
     // console.log('search/results', listingResults);
-    res.render('search-results.ejs', { listingResults }); // Render the new page
+    res.render('search/search_results.ejs', { listingResults }); // Render the new page
 });
 
 // Allow the router object to be used in other js files.
