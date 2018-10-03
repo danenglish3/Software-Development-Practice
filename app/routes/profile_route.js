@@ -48,8 +48,10 @@ router.get('/profile/:id', (req, res, next) => {
                                                 if (err5) next(err);
                                             });
                                         }
+
                                         // Create profile object with queried detials
                                         const profile = {
+                                            page: results2[0].Name,
                                             editable: false,
                                             id: req.params.id,
                                             name: results2[0].Name,
@@ -109,13 +111,13 @@ router.get('/profile/:id', (req, res, next) => {
                                                         count += 1; // Update count
 
                                                         if (count === results4.length) { // Once all the services has been looped through and added
-                                                            res.render('profile.ejs', profile);
+                                                            res.render('profile/profile', profile);
                                                         }
                                                     }
                                                 });
                                             });
                                         } else {
-                                            res.render('profile.ejs', profile);
+                                            res.render('profile/profile', profile);
                                         }
                                     }
                                 });
@@ -161,6 +163,7 @@ router.get('/profile/:id/edit', (req, res, next) => {
                             } else {
                                 // Create profile object using queried data
                                 const profile = {
+                                    page: 'Editing Profile',
                                     accountID: results[0].Account_ID,
                                     prevPhoto: results[0].Photo_ID,
                                     prevName: results2[0].Name,
@@ -172,7 +175,7 @@ router.get('/profile/:id/edit', (req, res, next) => {
                                     prevDescription: results[0].Description,
                                 };
                                 // Render editing page using profile object
-                                res.render('edit_profile.ejs', profile);
+                                res.render('profile/edit_profile', profile);
                             }
                         });
                     }
@@ -192,16 +195,18 @@ router.post('/edit_profile', (req, res, next) => {
             if (err) {
                 next(err);
             } else if (decoded.data.Account_ID.toString() !== req.body.accountID) { // Check if ID stored in user session matches requested one
-                console.log(decoded.data.Account_ID.toString());
-                console.log(req.params.id);
                 next(new Error('401'));
             } else {
                 // Delete profile is delete is enabled
                 if (req.body.profileDelete === 'on') {
                     const deleteAccount = `DELETE FROM AccountHolder WHERE Account_ID = ${req.body.accountID}`;
                     connection.query(deleteAccount, (err2) => {
-                        if (err2) next(err2);
-                        res.end('Profile deleted');
+                        if (err2) {
+                            next(err);
+                        } else {
+                            res.status(200);
+                            res.redirect('/');
+                        }
                     });
                 } else {
                     // Create profile object with submitted data
@@ -210,7 +215,7 @@ router.post('/edit_profile', (req, res, next) => {
                         Phone_Number: req.body.profilePhone,
                         Street_Name: req.body.profileStreet,
                         Suburb: req.body.profileSuburb,
-                        City: req.body.profileSuburb,
+                        City: req.body.profileCity,
                         Postcode: req.body.profilePostcode,
                     };
 
@@ -231,10 +236,12 @@ router.post('/edit_profile', (req, res, next) => {
                             const updatePhoto = `UPDATE Photo SET ? WHERE Photo_ID = ${req.body.photoID}`;
                             connection.query(updatePhoto, photo, (err3) => {
                                 if (err3) next(err3);
-                                res.end('Profile updated');
+                                res.status(200);
+                                res.redirect(`/profile/${req.body.accountID}`);
                             });
                         } else {
-                            res.end('Profile updated');
+                            res.status(200);
+                            res.redirect(`/profile/${req.body.accountID}`);
                         }
                     });
                 }

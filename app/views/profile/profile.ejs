@@ -1,13 +1,15 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" type="text/css" media="screen" href="/css/main.css" />
-    <script src="/js/main.js"></script>
-    <title>Profile</title>
+    <% include ../partials/head %>
 </head>
+
 <body>
+    <header>
+        <% include ../partials/header %>
+    </header>
+
     <h1><%= name %></h1> 
     <img src="/temp/<%= image %>" alt="profile picture" width="100">
     <dl>
@@ -45,22 +47,22 @@
             <%if (i == 0) { %>
                 <tr>
                     <td>
-                        <label><strong>Name</strong></label>
+                        <label>Name</label>
                     </td>
                     <td>
-                        <label><strong>ID</strong></label>
+                        <label>ID</label>
                     </td>
                     <td>
-                        <label><strong>Category</strong></label>
+                        <label>Category</label>
                     </td>
                     <td>
-                        <label><strong>Location</strong></label>
+                        <label>Location</label>
                     </td>
                     <td>
-                        <label><strong>Description</strong></label>
+                        <label>Description</label>
                     </td>
                     <td>
-                        <label><strong>Service Photos</strong></label>
+                        <label>Service Photos</label>
                     </td>
                 </tr>
             <% } %>
@@ -91,5 +93,9 @@
       <% } else{ %>  
         <em>No Services Listed!</em>
     <% } %>
+
+    <footer class="footer">
+        <% include ../partials/footer %>
+    </footer>
 </body>
 </html>
