@@ -51,6 +51,7 @@ router.get('/profile/:id', (req, res, next) => {
 
                                         // Create profile object with queried detials
                                         const profile = {
+                                            session: null,
                                             page: results2[0].Name,
                                             editable: false,
                                             id: req.params.id,
@@ -66,13 +67,14 @@ router.get('/profile/:id', (req, res, next) => {
                                             listingResults: [],
                                         };
 
-                                        // Check if owner of the profile is logged in to enable editing
+                                        // Check if owner of the profile is logged in to enable editing/change nav
                                         const userSession = req.cookies.SessionInfo;
                                         if (userSession != null) {
                                             jwt.verify(userSession, 'dcjscomp602', (err5, decoded) => {
                                                 if (err5) {
                                                     next(err5);
                                                 } else {
+                                                    profile.session = decoded.data;
                                                     if (decoded.data.Account_ID === results[0].Profile_ID) {
                                                         profile.editable = true;
                                                     }
@@ -80,6 +82,7 @@ router.get('/profile/:id', (req, res, next) => {
                                             });
                                         }
 
+                                        // Render listings
                                         if (results4.length > 0) {
                                             let count = 0;
                                             results4.forEach((service) => { // For each service found in the previous function
@@ -163,6 +166,7 @@ router.get('/profile/:id/edit', (req, res, next) => {
                             } else {
                                 // Create profile object using queried data
                                 const profile = {
+                                    session: decoded.data,
                                     page: 'Editing Profile',
                                     accountID: results[0].Account_ID,
                                     prevPhoto: results[0].Photo_ID,
@@ -209,39 +213,50 @@ router.post('/edit_profile', (req, res, next) => {
                         }
                     });
                 } else {
-                    // Create profile object with submitted data
-                    const profile = {
-                        Description: req.body.profileDescription,
-                        Phone_Number: req.body.profilePhone,
-                        Street_Name: req.body.profileStreet,
-                        Suburb: req.body.profileSuburb,
-                        City: req.body.profileCity,
-                        Postcode: req.body.profilePostcode,
+                    const account = {
+                        Name: req.body.accountName,
                     };
 
-                    // Update the profile using profile object
-                    const updateProfile = `UPDATE Profile SET ? WHERE Profile_ID = ${req.body.accountID}`;
-                    connection.query(updateProfile, profile, (err2) => {
-                        if (err2) next(err2);
-                        if (req.files[0] !== undefined) {
-                            const file = req.files[0];
-                            const data = new Buffer.from(file.buffer, 'base64', (err3) => { // Read the encoded data into binary
-                                if (err3) next(err3);
-                            });
-                            const photo = { // Create photo object corresponding to 'Photo' table
-                                Photo_Blob: data,
-                                Extension: file.originalname.substring(file.originalname.lastIndexOf('.') + 1, file.originalname.length),
-                                Profile_ID: req.body.accountID,
-                            };
-                            const updatePhoto = `UPDATE Photo SET ? WHERE Photo_ID = ${req.body.photoID}`;
-                            connection.query(updatePhoto, photo, (err3) => {
-                                if (err3) next(err3);
-                                res.status(200);
-                                res.redirect(`/profile/${req.body.accountID}`);
-                            });
+                    const updateAccount = `UPDATE AccountHolder SET ? WHERE Account_ID = ${req.body.accountID}`;
+                    connection.query(updateAccount, account, (err2) => {
+                        if (err2) {
+                            next(err2);
                         } else {
-                            res.status(200);
-                            res.redirect(`/profile/${req.body.accountID}`);
+                            // Create profile object with submitted data
+                            const profile = {
+                                Description: req.body.profileDescription,
+                                Phone_Number: req.body.profilePhone,
+                                Street_Name: req.body.profileStreet,
+                                Suburb: req.body.profileSuburb,
+                                City: req.body.profileCity,
+                                Postcode: req.body.profilePostcode,
+                            };
+
+                            // Update the profile using profile object
+                            const updateProfile = `UPDATE Profile SET ? WHERE Profile_ID = ${req.body.accountID}`;
+                            connection.query(updateProfile, profile, (err3) => {
+                                if (err3) next(err3);
+                                if (req.files[0] !== undefined) {
+                                    const file = req.files[0];
+                                    const data = new Buffer.from(file.buffer, 'base64', (err4) => { // Read the encoded data into binary
+                                        if (err4) next(err4);
+                                    });
+                                    const photo = { // Create photo object corresponding to 'Photo' table
+                                        Photo_Blob: data,
+                                        Extension: file.originalname.substring(file.originalname.lastIndexOf('.') + 1, file.originalname.length),
+                                        Profile_ID: req.body.accountID,
+                                    };
+                                    const updatePhoto = `UPDATE Photo SET ? WHERE Photo_ID = ${req.body.photoID}`;
+                                    connection.query(updatePhoto, photo, (err4) => {
+                                        if (err4) next(err4);
+                                        res.status(200);
+                                        res.redirect(`/profile/${req.body.accountID}`);
+                                    });
+                                } else {
+                                    res.status(200);
+                                    res.redirect(`/profile/${req.body.accountID}`);
+                                }
+                            });
                         }
                     });
                 }
