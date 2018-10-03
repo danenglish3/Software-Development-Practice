@@ -15,9 +15,28 @@
             <ul class="navbar-nav mx-auto">
                 <li class="nav-item">
                     <form class="form-inline my-2 my-lg-0">
-                        <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-                        <input class="form-control mr-sm-2" type="text" name="searchCategory" placeholder="Category">
-                        <input class="form-control mr-sm-2" type="text" name="searchLocation" placeholder="Location">
+                        <input class="form-control mr-sm-2" type="search" placeholder="Keywords" aria-label="searchKeyword">
+                        <div class="dropdown mr-sm-2">
+                            <button class="btn btn-secondary dropdown-toggle" type="button" id="categorySearch" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                            Category
+                            <span class="caret"></span>
+                            </button>     
+                            <ul class="dropdown-menu" aria-labelledby="categorySearch">
+                              <li><a class="dropdown-item " href="#" data-value="landscaping">Landscaping</a></li>
+                              <li><a class="dropdown-item" href="#" data-value="construction">Construction</a></li>
+                              <li><a class="dropdown-item" href="#" data-value="automotive">Automotive</a></li>
+                            </ul>
+                        </div>
+                        <div class="dropdown mr-sm-2">
+                            <button class="btn btn-secondary dropdown-toggle" type="button" id="locationSearch" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                              Location
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="locationSearch">
+                              <a class="dropdown-item" href="#">Auckland</a>
+                              <a class="dropdown-item" href="#">Wellington</a>
+                              <a class="dropdown-item" href="#">Christchurch</a>
+                            </div>
+                        </div>
                         <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
                     </form>
                 </li>

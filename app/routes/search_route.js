@@ -93,7 +93,7 @@ function renderSearchPage(req, res, next) {
     if (!(req.undefResults)) { // IF there are results to be displayed
         req.services.forEach((service) => { // For each service found in the previous function
         // Create a statement that will gather all the photos that are related to a aervice
-            const queryPhotos = `SELECT * FROM Photo WHERE Service_ID = ${service.Service_ID}`;
+            const queryPhotos = `SELECT * FROM Photo WHERE Photo_ID = ${service.MainPhotoID}`;
             connection.query(queryPhotos, (err, results4) => {
                 if (err) {
                     next(new Error('500'));
@@ -105,12 +105,12 @@ function renderSearchPage(req, res, next) {
                         location: service.Location,
                         category: service.Category,
                         description: service.Description,
-                        imageFiles: [], // Create empty array for holding filenames for the images
+                        imageFile: 21, // Create empty array for holding filenames for the images
                         profileid: service.Profile_ID,
                     };
                     results4.forEach((element) => { // For each result of the photo query (results3):
                         const filename = `${uuid()}.${element.Extension}`; // Create a filename
-                        singleListing.imageFiles.push(filename); // Add filename to array in singleListing object
+                        singleListing.imageFile = filename; // Add filename to array in singleListing object
                         // Write the file to the temp directory
                         fs.writeFile(`app/public/temp/${filename}`, element.Photo_Blob, (err5) => {
                             if (err5) throw err5;

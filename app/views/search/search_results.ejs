@@ -2,82 +2,69 @@
 <html>
 
 <head>
-    <meta charset="utf-8" />
-    <title>Search</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" type="text/css" media="screen" href="../public/css/main.css" />
-    <script src="../public/js/main.js"></script>
+    <% include ../partials/head %>
 </head>
 
-<body>    
-    <h1>Search Results</h1>
-        <% if(listingResults.length > 0){ %>
-            <table>
-            <% for(var i = 0; i < listingResults.length; i++) { %>
-                <%if (i == 0) { %>
-                    <tr>
-                        <td>
-                            <label><strong>Name</strong></label>
-                        </td>
-                        <td>
-                            <label><strong>ID</strong></label>
-                        </td>
-                        <td>
-                            <label><strong>Category</strong></label>
-                        </td>
-                        <td>
-                            <label><strong>Location</strong></label>
-                        </td>
-                        <td>
-                            <label><strong>Description</strong></label>
-                        </td>
-                        <td>
-                            <label><strong>Service Photos</strong></label>
-                        </td>
-                    </tr>
-                <% } %>
-            <tr>
-                <td>
-                    <%= listingResults[i].singleListing.name %>
-                </td>
-                <td>
-                    <%= listingResults[i].singleListing.serviceid %>
-                </td>
-                <td>
-                    <%= listingResults[i].singleListing.category %>
-                </td>
-                <td>
-                    <%= listingResults[i].singleListing.location %>
-                </td>
-                <td>
-                    <%= listingResults[i].singleListing.description %>
-                </td>
-                <td>
-                    <%for (var image in listingResults[i].singleListing.imageFiles){%>
-                    <img src="/temp/<%= listingResults[i].singleListing.imageFiles[image] %>" alt="" height="100">
-                    <%}%>
-                </td>
-                <td>
-                    <form method="get" action="/profile/<%= listingResults[i].singleListing.profileid %>" enctype="multipart/form-data" id="selectProfile">
-                            <input type="submit" value="Go to Profile">
-                    </form>                    
-                </td>
-                <td>
-                    <form method="get" action="/new_quote/<%= listingResults[i].singleListing.serviceid %>" enctype="multipart/form-data" id="newQuote">
-                            <input type="submit" value="Request a Quote">
-                    </form>                    
-                </td>
-            </tr>
+<body>
+    <header>
+        <% include ../partials/header %>
+    </header>
+    <div class="center">
+        <h1><b>Search Results</b></h1>
+    </div>
+    <% if( listingResults.length > 0 ) { %>
+    <% var i = 0 %>
+    <table>
+        <% while( i < listingResults.length ) { %>
+        <tr>
+            <% for( var j = 0; j < 3; j++ ) { %>
+            <td>
+                <div class="card-deck">
+                    <div class="card" style="width: 20rem;">
+                        <img class="card-img-top" src="/temp/<%= listingResults[i]singleListing.imageFile %>" alt="Service Image"
+                            height="200">
+                        <div class="card-body">
+                            <h2 class="card-title">
+                                <%= listingResults[i].singleListing.name %>
+                            </h2>
+                            <div class="card-text">
+                                <%= listingResults[i].singleListing.location %>
+                            </div>
+                            <p class="card-text">
+                                <%= listingResults[i].singleListing.description %>
+                            </p>
+                            <form method="get" action="/profile/<%= listingResults[i].singleListing.profileid %>"
+                                enctype="multipart/form-data" id="selectProfile">
+                                <input type="submit" value="Go to Profile &rarr;">
+                            </form>
+                            <p></p>
+                            <form method="get" action="/new_quote/<%= listingResults[i].singleListing.serviceid %>"
+                                enctype="multipart/form-data" id="newQuote">
+                                <input type="submit" value="Request a Quote">
+                            </form>
+                        </div>
+                        <div class="card-footer text-muted">
+                        </div>
+                    </div>
+                </div>
+            </td>
+            <% i++ %>
             <% } %>
-            </table>
-          <% } else{ %>  
-            <h1>Unable to find anything with that criteria, Please try again!</h1>
+        </tr>
         <% } %>
+    </table>
+    <% } else { %>
+    <h1>Unable to find anything with that criteria, Please try again!</h1>
+    <% } %>
 
+    <p></p>
     <form method="get" action="/search" enctype="multipart/form-data" id="backToSearch">
         <input type="submit" value="Back to search">
     </form>
 
+    <footer class="footer">
+        <% include ../partials/footer %>
+    </footer>
 </body>
 
 </html>
