@@ -9,43 +9,70 @@
     <header>
         <% include ../partials/header %>
     </header>
-
-    <h1><%= title %></h1>
-    <p>
-        <em> <%= serviceid %></em>
-        <dl>
-            <dt>Location</dt>
-            <dd>
-                <%= location %>
-            </dd>
-            <dt>Author</dt>
-            <dd>
-                <%= author %>
-            </dd>
-            <dt>Category</dt>
-            <dd>
-                <%= category %>
-            </dd>
-        </dl>
-    </p>
-    <h2>Description</h2>
-    <p>
-        <%= description %>
-    </p>
-    <h2>Images</h2>
-
-    <%for (var image in imageFiles){%>
-        <img src="/temp/<%= imageFiles[image] %>" alt="" height="100">
-    <%}%>
-
-    <%if (editable === true){%>
-        <form method="GET" action="/listing/<%= serviceid %>/edit">
-            <input type="submit" value="Edit" />
-        </form>
-    <%}%>
+    <!-- Page Content -->
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-sm-8">
+                <div class="card">
+                    <h2 class="card-header">
+                        <%= title %>
+                        <%if (editable === true){%>
+                        <a class="btn btn-outline-dark float-sm-right" href="/listing/<%= serviceid %>/edit">Edit</a>
+                        <%}%>
+                    </h2>
+                    <div class="card-body">
+                        <p class="card-text">
+                            <%= description %>
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <div class="card">
+                    <div class="card-header">
+                        About
+                    </div>
+                    <div class="card-body">
+                        <em>
+                            #
+                            <%= serviceid %></em>
+                        <dl>
+                            <dt>Location</dt>
+                            <dd>
+                                <%= location %>
+                            </dd>
+                            <dt>Author</dt>
+                            <dd>
+                                <%= author %>
+                            </dd>
+                            <dt>Category</dt>
+                            <dd>
+                                <%= category %>
+                            </dd>
+                        </dl>
+                        <p>
+                            <a class="btn btn-primary btn-dark" href="#">Request Quote &raquo;</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container mt-4">
+        <div class="row text-center text-lg-left">
+            <%for (var image in imageFiles){%>
+            <div class="col-lg-3 col-md-4 col-xs-6">
+                <a href="#" class="d-block mb-4 h-100">
+                    <img class="img-fluid img-thumbnail" src="/temp/<%= imageFiles[image] %>">
+                </a>
+            </div>
+            <%}%>
+        </div>
+    </div>
 
     <footer class="footer">
-            <% include ../partials/footer %>
+        <% include ../partials/footer %>
     </footer>
 </body>
+
 </html>
