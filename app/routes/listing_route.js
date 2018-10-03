@@ -41,8 +41,9 @@ router.get('/listing/:id', (req, res, next) => {
                                 // Once the above query is complete:
                                 // Create a listing object with property names that correspond to the ejs template
                                 const listing = {
+                                    session: null,
                                     editable: false,
-                                    page: results[0].title,
+                                    page: results[0].Title,
                                     title: results[0].Title, // Use the information from the first query (results) to add the title
                                     serviceid: results[0].Service_ID,
                                     location: results[0].Location,
@@ -59,6 +60,7 @@ router.get('/listing/:id', (req, res, next) => {
                                         if (err4) {
                                             next(err(err4));
                                         } else {
+                                            listing.session = decoded.data;
                                             if (decoded.data.Account_ID === results[0].Profile_ID) {
                                                 listing.editable = true;
                                             }
@@ -89,10 +91,21 @@ router.get('/listing/:id', (req, res, next) => {
 // Respond to the browsers 'get' request by serving new_listing.ejs to URL '/new_listing'
 router.get('/new_listing', (req, res, next) => {
     const userSession = req.cookies.SessionInfo;
-    if (!userSession) { // Check if user Session information is currently stored in browser, must be handled before JWT.verify is called
+    if (!userSession) { // Check if user Session information is currently stored in browser
         next(new Error('401'));
     } else {
-        res.render('listing/new_listing', { page: 'New Listing' }); // Render the the HTML from the EJS template
+        jwt.verify(userSession, 'dcjscomp602', (err, decoded) => {
+            if (err) {
+                next(err(err));
+            } else {
+                const newListing = {
+                    session: decoded.data,
+                    page: 'New Listing',
+                };
+                // Render the the HTML from the EJS template
+                res.render('listing/new_listing', newListing);
+            }
+        });
     }
 });
 
@@ -186,6 +199,7 @@ router.get('/listing/:id/edit', (req, res, next) => {
                                 next(err3);
                             } else {
                                 const listing = {
+                                    session: decoded.data,
                                     page: `Editing ${results[0].Title}`,
                                     accountID: results[0].Profile_ID,
                                     listingID: results[0].Service_ID,
