@@ -38,9 +38,11 @@
         <img src="/temp/<%= imageFiles[image] %>" alt="" height="100">
     <%}%>
 
-    <form method="GET" action="/listing/<%= serviceid %>/edit">
-        <input type="submit" value="Edit" />
-    </form>
+    <%if (editable === true){%>
+        <form method="GET" action="/listing/<%= serviceid %>/edit">
+            <input type="submit" value="Edit" />
+        </form>
+    <%}%>
 
     <footer class="footer">
             <% include ../partials/footer %>

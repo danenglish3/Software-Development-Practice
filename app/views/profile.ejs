@@ -32,9 +32,11 @@
         </dd>
     </dl>
 
-    <form method="GET" action="/profile/<%= id %>/edit">
-        <input type="submit" value="Edit" />
-    </form>
+    <%if (editable === true){%>
+        <form method="GET" action="/profile/<%= id %>/edit">
+            <input type="submit" value="Edit" />
+        </form>
+    <%}%>
 
     <h2>Listings</h2>
     <% if(listingResults.length > 0){ %>
