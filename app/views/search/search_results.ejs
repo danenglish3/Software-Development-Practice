@@ -12,58 +12,55 @@
     <div class="center">
         <h1><b>Search Results</b></h1>
     </div>
-    <% if( listingResults.length > 0 ) { %>
-    <% var i = 0 %>
+    <% if(listingResults.length > 0) {
+    var count = 0; %>
     <table>
-        <% while( i < listingResults.length ) { %>
+        <% for(var i=0; i < Math.ceil(listingResults.length/3); i++) { %>
         <tr>
-            <% for( var j = 0; j < 3; j++ ) { %>
-            <td>
-                <div class="card-deck">
-                    <div class="card" style="width: 20rem;">
-                        <img class="card-img-top" src="/temp/<%= listingResults[i]singleListing.imageFile %>" alt="Service Image"
+            <% for(var j=0; j < 3; j++) { %>
+                <% if(count < listingResults.length) { %>
+                <td>
+                    <div class="card" style="width: 20rem; height: 30rem;" >
+                        <img class="card-img-top" src="/temp/<%= listingResults[count].singleListing.imageFile %>" alt="Service Image"
                             height="200">
                         <div class="card-body">
-                            <h2 class="card-title">
-                                <%= listingResults[i].singleListing.name %>
-                            </h2>
+                            <h5 class="card-title">
+                                <%= listingResults[count].singleListing.name %>
+                            </h5>
                             <div class="card-text">
-                                <%= listingResults[i].singleListing.location %>
+                                <%= listingResults[count].singleListing.location %>
                             </div>
                             <p class="card-text">
-                                <%= listingResults[i].singleListing.description %>
+                                <%= listingResults[count].singleListing.description %>
                             </p>
-                            <form method="get" action="/profile/<%= listingResults[i].singleListing.profileid %>"
+                            <form method="get" action="/profile/<%= listingResults[count].singleListing.profileid %>"
                                 enctype="multipart/form-data" id="selectProfile">
                                 <input type="submit" value="Go to Profile &rarr;">
                             </form>
                             <p></p>
-                            <form method="get" action="/new_quote/<%= listingResults[i].singleListing.serviceid %>"
+                            <form method="get" action="/new_quote/<%= listingResults[count].singleListing.serviceid %>"
                                 enctype="multipart/form-data" id="newQuote">
                                 <input type="submit" value="Request a Quote">
                             </form>
                         </div>
-                        <div class="card-footer text-muted">
-                        </div>
+                        <div class="card-footer text-muted"></div>
                     </div>
-                </div>
-            </td>
-            <% i++ %>
-            <% } %>
+                </td>
+                <% } %>
+            <% count++ } %>
         </tr>
         <% } %>
     </table>
-    <% } else { %>
+    <% } else{ %>
     <h1>Unable to find anything with that criteria, Please try again!</h1>
     <% } %>
-
-    <p></p>
-    <form method="get" action="/search" enctype="multipart/form-data" id="backToSearch">
-        <input type="submit" value="Back to search">
-    </form>
+    
+        <form method="get" action="/search" enctype="multipart/form-data" id="backToSearch">
+            <input type="submit" value="Back to search">
+        </form>
 
     <footer class="footer">
-        <% include ../partials/footer %>
+            <% include ../partials/footer %>
     </footer>
 </body>
 
