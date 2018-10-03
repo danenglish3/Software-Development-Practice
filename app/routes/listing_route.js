@@ -8,6 +8,7 @@ const connection = require('../database');
 /* Set up route for listing pages */
 
 const router = express.Router(); // Get express's router functions
+
 // Respond to the browsers 'get' for URL '/listing/id'
 router.get('/listing/:id', (req, res, next) => {
     if (Number.isNaN(req.params.id)) { // Check if ID for get is a number
@@ -16,71 +17,71 @@ router.get('/listing/:id', (req, res, next) => {
         // Create a select statement to query the db for a listing using the ':id' in  the '/listing/:id'
         const queryService = `SELECT * FROM Service WHERE Service_ID='${req.params.id}'`; // Submit the statement
         connection.query(queryService, (err, results) => {
-        // Once the above query is complete:
+            // Once the above query is complete:
             if (err) { // Trigger Express Error Handler if there is an error
                 next(err);
             } else if (!results.length) { // If the query return is empty trigger 404 error
                 next(new Error('404'));
             } else {
-            // Create a select statement to query the db for the name of the author using the profile id
+                // Create a select statement to query the db for the name of the author using the profile id
                 const queryAuthor = `SELECT Name FROM AccountHolder WHERE Account_ID = ${results[0].Profile_ID}`;
                 connection.query(queryAuthor, (err2, results2) => { // Sumbit the statement
-                // Once the above query is complete:
+                    // Once the above query is complete:
                     if (err2) {
                         next(err2);
                     } else if (!results2.length) {
                         next(new Error('404'));
                     } else {
-                    // Create a select statement to query the db for the photos
-                    const queryImages = `SELECT * FROM Photo WHERE Service_ID = ${results[0].Service_ID}`;
-                    connection.query(queryImages, (err3, results3) => { // Submit statement
-                        if (err3) {
-                            next(err3);
-                        } else {
-                            // Once the above query is complete:
-                            // Create a listing object with property names that correspond to the ejs template
-                            const listing = {
-                                editable: false,
-                                page: results[0].title,
-                                title: results[0].Title, // Use the information from the first query (results) to add the title
-                                serviceid: results[0].Service_ID,
-                                location: results[0].Location,
-                                author: results2[0].Name, // Use the information from the second query (results2) to add the author
-                                category: results[0].Category,
-                                description: results[0].Description,
-                                imageFiles: [], // Create empty array for holding filenames for the images
-                            };
+                        // Create a select statement to query the db for the photos
+                        const queryImages = `SELECT * FROM Photo WHERE Service_ID = ${results[0].Service_ID}`;
+                        connection.query(queryImages, (err3, results3) => { // Submit statement
+                            if (err3) {
+                                next(err3);
+                            } else {
+                                // Once the above query is complete:
+                                // Create a listing object with property names that correspond to the ejs template
+                                const listing = {
+                                    editable: false,
+                                    page: results[0].title,
+                                    title: results[0].Title, // Use the information from the first query (results) to add the title
+                                    serviceid: results[0].Service_ID,
+                                    location: results[0].Location,
+                                    author: results2[0].Name, // Use the information from the second query (results2) to add the author
+                                    category: results[0].Category,
+                                    description: results[0].Description,
+                                    imageFiles: [], // Create empty array for holding filenames for the images
+                                };
 
-                             // Check if owner of listing is logged in to enable editing
-                            const userSession = req.cookies.SessionInfo;
-                            if (userSession != null) {
-                                jwt.verify(userSession, 'dcjscomp602', (err4, decoded) => {
-                                    if (err4) {
-                                        next(err(err4));
-                                    } else {
-                                        if (decoded.data.Account_ID === results[0].Profile_ID) {
+                                // Check if owner of listing is logged in to enable editing
+                                const userSession = req.cookies.SessionInfo;
+                                if (userSession != null) {
+                                    jwt.verify(userSession, 'dcjscomp602', (err4, decoded) => {
+                                        if (err4) {
+                                            next(err(err4));
+                                        } else {
+                                            if (decoded.data.Account_ID === results[0].Profile_ID) {
                                                 listing.editable = true;
+                                            }
                                         }
-                                    }
+                                    });
+                                }
+                                results3.forEach((element) => { // For each result of the photo query (results3):
+                                    const filename = `${uuid()}.${element.Extension}`; // Create a filename
+                                    listing.imageFiles.push(filename); // Add filename to array in listing object
+                                    // Write the file to the temp directory
+                                    fs.writeFile(`app/public/temp/${filename}`, element.Photo_Blob, (err4) => {
+                                        if (err4) next(err4);
+                                    });
                                 });
+                                // Now that the listing object is complete, render the HTML using the information from the EJS template
+                                res.render('listing/listing', listing);
                             }
-
-                            results3.forEach((element) => { // For each result of the photo query (results3):
-                                const filename = `${uuid()}.${element.Extension}`; // Create a filename
-                                listing.imageFiles.push(filename); // Add filename to array in listing object
-                                // Write the file to the temp directory
-                                fs.writeFile(`app/public/temp/${filename}`, element.Photo_Blob, (err4) => {
-                                    if (err4) next(err4);
-                                });
-                            });
-                            // Now that the listing object is complete, render the HTML using the information from the EJS template
-                            res.render('listing/listing', listing);
-                        }
-                    });
-                }
-            });
-        }
-    });
+                        });
+                    }
+                });
+            }
+        });
+    }
 });
 
 /* Set up routes for listing form */
