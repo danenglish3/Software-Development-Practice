@@ -24,18 +24,32 @@
             </ul>
             <!-- My Account Dropdown Menu -->
             <ul class="navbar-nav">
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
-                        aria-haspopup="true" aria-expanded="false">
-                        My Account
-                    </a>
-                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item" href="/login">Sign In</a>
-                        <a class="dropdown-item" href="/register">Register</a>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="#">Saved</a>
-                    </div>
-                </li>
+                <%if (session === null){%>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
+                            aria-haspopup="true" aria-expanded="false">
+                            My Account
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item" href="/login">Log In</a>
+                            <a class="dropdown-item" href="/register">Register</a>
+                        </div>
+                    </li>
+                <%} else {%>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
+                            aria-haspopup="true" aria-expanded="false">
+                            <%= session.Name %>
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item" href="/profile/<%= session.Account_ID %>">Profile</a>
+                            <a class="dropdown-item" href="/account/<%= session.Account_ID %>">Account</a>
+                            <a class="dropdown-item" href="#">Saved</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="#">Log Out</a>
+                        </div>
+                    </li>
+                <%}%>
             </ul>
         </div>
     </div>
