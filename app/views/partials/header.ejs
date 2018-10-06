@@ -42,9 +42,11 @@
                             <%= session.Name %>
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item" href="/new_listing">New Service</a>
+                            <a class="dropdown-item" href="#">Saved</a>
+                            <div class="dropdown-divider"></div>
                             <a class="dropdown-item" href="/profile/<%= session.Account_ID %>">Profile</a>
                             <a class="dropdown-item" href="/account/<%= session.Account_ID %>">Account</a>
-                            <a class="dropdown-item" href="#">Saved</a>
                             <div class="dropdown-divider"></div>
                             <a class="dropdown-item" href="#">Log Out</a>
                         </div>
