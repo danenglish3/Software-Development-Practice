@@ -10,50 +10,83 @@
         <% include ../partials/header %>
     </header>
 
-    <h1>Edit Profile</h1>
-    <!--Upon Submitting the form, make a request with the post method to url /new_profile-->
-    <form method="post" action="/edit_profile" enctype="multipart/form-data" id="editProfileForm">
-        <input type="hidden" name="accountID" value="<%= accountID %>">
-        <input type="hidden" name="photoID" value="<%= prevPhoto %>">
-        <label>Name</label>
-        <br>
-        <input type="text" name="accountName" value="<%= prevName %>">
-        <br>
-        <label>Phone</label>
-        <br>
-        <input type="text" name="profilePhone" value="<%= prevPhone %>">
-        <br>
-        <label>Street</label>
-        <br>
-        <input type="text" name="profileStreet" value="<%= prevStreet %>">
-        <br>
-        <label>Suburb</label>
-        <br>
-        <input type="text" name="profileSuburb" value="<%= prevSuburb %>">
-        <br>
-        <label>City</label>
-        <br>
-        <input type="text" name="profileCity" value="<%= prevCity %>">
-        <br>
-        <label>Postcode</label>
-        <br>
-        <input type="text" name="profilePostcode" value="<%= prevPostcode %>">
-        <br>
-        <label>Description</label>
-        <br>
-        <textarea name="profileDescription" rows="4" cols="50" form="editProfileForm"><%= prevDescription %></textarea>
-        <br>
-        <label>Profile Image</label>
-        <br>
-        <input type="file" name="profileImage" accept="image/*">
-        <br>
-        <label>Delete Account?</label>
-        <input type="checkbox" name="profileDelete">
-        <br>
-        <input type="submit" value="Submit">
-    </form>
+    <div class="container mt-4">
+        <h1>Edit Profile</h1>
+        <!--Upon Submitting the form, make a request with the post method to url /new_profile-->
+        <form method="post" action="/edit_profile" enctype="multipart/form-data" id="editProfileForm">
+            <!-- Hidden fields -->
+            <input type="hidden" name="accountID" value="<%= accountID %>">
+            <input type="hidden" name="photoID" value="<%= prevPhoto %>">
 
-    <footer class="footer">
+            <div class="form-group row">
+                <div class="col-sm-4">
+                    <label for="editProfileFormName">Name</label>
+                    <input class="form-control" type="text" name="accountName" value="<%= prevName %>" id="editProfileFormName"
+                        required>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <div class="col-sm-4">
+                    <label for="editProfileFormPhone">Phone</label>
+                    <input class="form-control" type="text" name="profilePhone" value="<%= prevPhone %>" id="editProfileFormPhone" required>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <div class="col-sm-4">
+                    <label for="editProfileFormStreet">Street</label>
+                    <input class="form-control" type="text" name="profileStreet" value="<%= prevStreet %>" id="editProfileFormStreet"
+                        required>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <div class="col-sm-4">
+                    <label for="editProfileFormSuburb">Suburb</label>
+                    <input class="form-control" type="text" name="profileSuburb" value="<%= prevSuburb %>" id="editProfileFormSuburb"
+                        required>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <div class="col-sm-4">
+                    <label for="editProfileFormCity">City</label>
+                    <input class="form-control" type="text" name="profileCity" value="<%= prevCity %>" id="editProfileFormCity" required>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <div class="col-sm-1">
+                    <label for="editProfileFormPostCode">Postcode</label>
+                    <input class="form-control" type="text" name="profilePostcode" value="<%= prevPostcode %>" id="editProfileFormPostCode"
+                        required>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <div class="col-sm-8">
+                    <label for="editProfileFormDesc">Description</label>
+                    <textarea class="form-control" name="profileDescription" rows="4" form="editProfileForm" id="editProfileFormDesc"
+                        required><%= prevDescription %></textarea>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="btn btn-outline-dark" for="editProfileFormImg">Upload Profile Image</label>
+                <input class="form-control" class="form-control-file" type="file" name="profileImage" accept="image/*" id="editProfileFormImg">
+            </div>
+
+            <div class="form-group">
+                <input type="checkbox" name="profileDelete" id="editProfileFormDel">
+                <label for="editProfileFormDel">Delete Account?</label>
+            </div>
+
+            <input class="btn btn-dark" type="submit" value="Submit">
+        </form>
+    </div>
+
+    <footer>
         <% include ../partials/footer %>
     </footer>
 </body>

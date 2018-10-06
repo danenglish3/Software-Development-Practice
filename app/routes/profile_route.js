@@ -33,7 +33,7 @@ router.get('/profile/:id', (req, res, next) => {
                             if (err3) {
                                 next(err3);
                             } else {
-                                const queryServices = `SELECT * FROM Service WHERE Profile_ID=${req.params.id}`;
+                                const queryServices = `SELECT Service_ID, Title, Location, Category FROM Service WHERE Profile_ID=${req.params.id}`;
                                 connection.query(queryServices, (err4, results4) => {
                                     if (err4) {
                                         next(err4);
@@ -100,7 +100,6 @@ router.get('/profile/:id', (req, res, next) => {
                                                             category: service.Category,
                                                             description: service.Description,
                                                             imageFiles: [], // Create empty array for holding filenames for the images
-                                                            profileid: service.Profile_ID,
                                                         };
                                                         results5.forEach((element) => { // For each result of the photo query (results3):
                                                             const imgFilename = `${uuid()}.${element.Extension}`; // Create a filename
