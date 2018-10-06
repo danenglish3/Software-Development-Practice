@@ -10,9 +10,9 @@
         <% include ../partials/header %>
     </header>
     <!-- Page Content -->
-    <div class="container mt-4">
+    <div class="container">
         <div class="row">
-            <div class="col-sm-8">
+            <div class="col-md-8 mt-4">
                 <div class="card">
                     <h2 class="card-header">
                         <%= title %>
@@ -21,13 +21,13 @@
                         <%}%>
                     </h2>
                     <div class="card-body">
-                        <p class="card-text">
+                        <p class="card-text preserve-line-breaks">
                             <%= description %>
                         </p>
                     </div>
                 </div>
             </div>
-            <div class="col-sm-4">
+            <div class="col-md-4  mt-4">
                 <div class="card">
                     <div class="card-header">
                         About
@@ -43,7 +43,7 @@
                             </dd>
                             <dt>Author</dt>
                             <dd>
-                                <%= author %>
+                                <a href="/profile/<%= author.id %>"><%= author.name %></a>
                             </dd>
                             <dt>Category</dt>
                             <dd>
@@ -70,7 +70,7 @@
         </div>
     </div>
 
-    <footer class="footer">
+    <footer>
         <% include ../partials/footer %>
     </footer>
 </body>

@@ -47,7 +47,10 @@ router.get('/listing/:id', (req, res, next) => {
                                     title: results[0].Title, // Use the information from the first query (results) to add the title
                                     serviceid: results[0].Service_ID,
                                     location: results[0].Location,
-                                    author: results2[0].Name, // Use the information from the second query (results2) to add the author
+                                    author: { // Use the information from the first & second query to add the author
+                                        id: results[0].Profile_ID,
+                                        name: results2[0].Name,
+                                    },
                                     category: results[0].Category,
                                     description: results[0].Description,
                                     imageFiles: [], // Create empty array for holding filenames for the images
