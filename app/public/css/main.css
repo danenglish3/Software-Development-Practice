@@ -11,7 +11,6 @@ footer {
     position: absolute;
     bottom: 0;
     width: 100%;
-<<<<<<< HEAD
     height: 60px;
     line-height: 60px;
 }
@@ -22,7 +21,6 @@ footer {
 
 .third {
     width: 33%;
-=======
     height: 60px; /* Set the fixed height of the footer here */
     line-height: 60px; /* Vertically center the text there */
 }
@@ -43,5 +41,4 @@ input[type="file"] {
 -------------------------------------------------- */
 .preserve-line-breaks {
     white-space: pre-line;
->>>>>>> master
 }
