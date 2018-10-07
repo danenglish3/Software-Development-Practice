@@ -14,8 +14,8 @@
     </div>
     <% if(listingResults.length > 0) {
     var count = 0; %>
-    <div>
-        <table>
+    <div class="container-fluid">
+        <table class="table text-centered">
             <% for(var i=0; i < Math.ceil(listingResults.length/3); i++) { %>
             <tr>
                 <% for(var j=0; j < 3; j++) { %>
@@ -36,7 +36,7 @@
                             </p>
                             <form method="get" action="/profile/<%= listingResults[count].singleListing.profileid %>"
                                 enctype="multipart/form-data" id="selectProfile">
-                                <input type="submit" value="Go to Profile &rarr;">
+                                <input class="btn-hover" type="submit" value="Go to Profile &rarr;">
                             </form>
                             <p></p>
                             <form method="get" action="/new_quote/<%= listingResults[count].singleListing.serviceid %>"

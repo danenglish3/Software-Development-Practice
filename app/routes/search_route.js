@@ -114,6 +114,7 @@ function renderSearchPage(req, res, next) {
                         imageFile: 21, // Create empty array for holding filenames for the images
                         profileid: service.Profile_ID,
                     };
+                    // IF description is longer than 50 chars, cut down and add info to click
                     if (singleListing.description.length > 50) {
                         singleListing.description = singleListing.description.slice(0, 50);
                         singleListing.description += '. Click Profile to read more.';
