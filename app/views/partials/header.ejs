@@ -1,0 +1,58 @@
+<!-- views/partials/header.ejs -->
+<!-- Navigation Bar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <!-- Confine navigation contents to the global container -->
+    <div class="container">
+        <!-- Nav Bar Branding -->
+        <a class="navbar-brand active" href="/">Kiwi Trader</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <!-- Search Fields -->
+            <ul class="navbar-nav mx-auto">
+                <li class="nav-item">
+                    <form class="form-inline my-2 my-lg-0">
+                        <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+                        <input class="form-control mr-sm-2" type="text" name="searchCategory" placeholder="Category">
+                        <input class="form-control mr-sm-2" type="text" name="searchLocation" placeholder="Location">
+                        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+                    </form>
+                </li>
+            </ul>
+            <!-- My Account Dropdown Menu -->
+            <ul class="navbar-nav">
+                <%if (session === null){%>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
+                            aria-haspopup="true" aria-expanded="false">
+                            My Account
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item" href="/login">Log In</a>
+                            <a class="dropdown-item" href="/register">Register</a>
+                        </div>
+                    </li>
+                <%} else {%>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
+                            aria-haspopup="true" aria-expanded="false">
+                            <%= session.Name %>
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item" href="/new_listing">New Service</a>
+                            <a class="dropdown-item" href="#">Saved</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="/profile/<%= session.Account_ID %>">Profile</a>
+                            <a class="dropdown-item" href="/account/<%= session.Account_ID %>">Account</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="#">Log Out</a>
+                        </div>
+                    </li>
+                <%}%>
+            </ul>
+        </div>
+    </div>
+</nav>

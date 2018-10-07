@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <% include ../partials/head %>
+</head>
+
+<body>
+    <header>
+        <% include ../partials/header %>
+    </header>
+    <div class="container mt-4">
+        <h1>New Service Listing</h1>
+        <!-- New listing form -->
+        <form method="post" action="/new_listing" enctype="multipart/form-data" id="newListingForm">
+
+            <div class="form-group row">
+                <div class="col-sm-6">
+                    <label for="newListingFormTitle">Title</label>
+                    <input class="form-control" type="text" name="listingTitle" id="newListingFormTitle" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="newListingFormDesc">Description</label>
+                <textarea class="form-control" name="listingDescription" rows="8" form="newListingForm" id="newListingFormDesc"
+                    required></textarea>
+            </div>
+
+            <div class="form-group row">
+                <div class="col-sm-4">
+                    <label for="newListingFormLoc">Location</label>
+                    <input class="form-control" type="text" name="listingLocation" id="newListingFormLoc" required>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <div class="col-sm-4">
+                    <label>Catergory</label>
+                    <input class="form-control" type="text" name="listingCategory" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="btn btn-outline-dark" for="newListingFormImg">Add Images</label>
+                <input class="form-control-file" type="file" name="listingImages" accept="image/*" id="newListingFormImg"
+                    multiple>
+            </div>
+
+            <input class="btn btn-dark" type="submit" value="Submit">
+        </form>
+    </div>
+    <footer>
+        <% include ../partials/footer %>
+    </footer>
+</body>
+
+</html>

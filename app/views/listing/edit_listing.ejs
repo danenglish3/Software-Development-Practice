@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <% include ../partials/head %>
+</head>
+
+<body>
+    <header>
+        <% include ../partials/header %>
+    </header>
+    <div class="container mt-4">
+        <h1>Edit Service Listing</h1>
+        <!-- Edit Listing Form -->
+        <form method="post" action="/edit_listing" enctype="multipart/form-data" id="editListingForm">
+            <!-- Hidden Fields -->
+            <input type="hidden" name="accountID" value="<%= accountID %>">
+            <input type="hidden" name="listingID" value="<%= listingID %>">
+
+            <div class="form-group row">
+                <div class="col-sm-6">
+                    <label for="editListingFormTitle">Title</label>
+                    <input class="form-control" type="text" name="listingTitle" value="<%= prevTitle %>" id="editListingFormTitle"
+                        required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="editListingFormDesc">Description</label>
+                <textarea class="form-control" name="listingDescription" rows="8" form="editListingForm" id="editListingFormDesc"
+                    required><%= prevDesc %></textarea>
+            </div>
+
+            <div class="form-group row">
+                <div class="col-sm-4">
+                    <label for="editListingFormLoc">Location</label>
+                    <input class="form-control" type="text" name="listingLocation" value="<%= prevLocation %>" id="editListingFormLoc"
+                        required>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <div class="col-sm-4">
+                    <label for="editListingFormCat">Category</label>
+                    <input class="form-control" type="text" name="listingCategory" value="<%= prevCategory %>" id="editListingFormCat"
+                        required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Delete Images</label>
+                <br>
+                <%for (var image in imageFiles){%>
+                <img class="form-check-label rounded" src="/temp/<%= imageFiles[image] %>" alt="" height="100">
+                <input class="form-check-input" type="checkbox" name="delete[]" value="<%= prevImages[image] %>">
+                <%}%>
+            </div>
+
+            <div class="form-group">
+                <label class="btn btn-outline-dark" for="editListingFormImg">Add More Images</label>
+                <input class="form-control-file" type="file" name="listingImages" accept="image/*" id="editListingFormImg"
+                    multiple>
+            </div>
+
+            <div class="form-group">
+                <input type="checkbox" name="listingDelete" id="editListingFormDel">
+                <label for="editListingFormDel">Delete Listing</label>
+            </div>
+
+            <input class="btn btn-dark" type="submit" value="Submit">
+        </form>
+    </div>
+    <footer>
+        <% include ../partials/footer %>
+    </footer>
+</body>
+
+</html>

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <% include ../partials/head %>
+</head>
+
+<body>
+    <header>
+        <% include ../partials/header %>
+    </header>
+    <!-- Page Content -->
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8 mt-4">
+                <div class="card">
+                    <h2 class="card-header">
+                        <%= title %>
+                        <%if (editable === true){%>
+                        <a class="btn btn-outline-dark float-sm-right" href="/listing/<%= serviceid %>/edit">Edit</a>
+                        <%}%>
+                    </h2>
+                    <div class="card-body">
+                        <p class="card-text preserve-line-breaks">
+                            <%= description %>
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4  mt-4">
+                <div class="card">
+                    <div class="card-header">
+                        About
+                    </div>
+                    <div class="card-body">
+                        <em>
+                            #
+                            <%= serviceid %></em>
+                        <dl>
+                            <dt>Location</dt>
+                            <dd>
+                                <%= location %>
+                            </dd>
+                            <dt>Author</dt>
+                            <dd>
+                                <a href="/profile/<%= author.id %>"><%= author.name %></a>
+                            </dd>
+                            <dt>Category</dt>
+                            <dd>
+                                <%= category %>
+                            </dd>
+                        </dl>
+                        <p>
+                            <a class="btn btn-primary btn-dark" href="#">Request Quote &raquo;</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container mt-4">
+        <div class="row text-center text-lg-left">
+            <%for (var image in imageFiles){%>
+            <div class="col-lg-3 col-md-4 col-xs-6">
+                <a href="#" class="d-block mb-4 h-100">
+                    <img class="img-fluid img-thumbnail" src="/temp/<%= imageFiles[image] %>">
+                </a>
+            </div>
+            <%}%>
+        </div>
+    </div>
+
+    <footer>
+        <% include ../partials/footer %>
+    </footer>
+</body>
+
+</html>

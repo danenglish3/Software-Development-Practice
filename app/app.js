@@ -27,6 +27,7 @@ app.use(require('./routes/login_route'));
 app.use(require('./routes/search_route'));
 app.use(require('./routes/profile_route'));
 app.use(require('./routes/account_routes'));
+app.use(require('./routes/quote_route'));
 
 // Any URLs, except for the ones in the routers specified above, will trigger the Express Error Handler
 app.get('*', (req, res, next) => {
@@ -45,7 +46,6 @@ app.use((error, req, res, next) => {
         console.log(error);
         res.status(500).send('An error has occured');
     }
-
     next();
 });
 
