@@ -2,14 +2,11 @@
 const express = require('express');
 const fs = require('fs');
 const uuid = require('uuid/v4');
+const jwt = require('jsonwebtoken');
 const connection = require('../database');
 
-/* Temporary fs data retrieve/save functions */
 
-// TODO: Implement user
-function getUser() {
-    return '12350';
-}
+/* Temporary fs data retrieve/save functions */
 
 /* Set up route for listing pages */
 
@@ -72,49 +69,79 @@ router.get('/listing/:id', (req, res, next) => {
 /* Set up routes for listing form */
 
 // Respond to the browsers 'get' request by serving new_listing.ejs to URL '/new_listing'
-router.get('/new_listing', (req, res) => {
-    res.render('new_listing.ejs'); // Render the the HTML from the EJS template
+router.get('/new_listing/:id', (req, res, next) => {
+    const userSession = req.cookies.SessionInfo;
+    if (isNaN(req.params.id)) {
+        next(new Error('404'));
+    } else if (!userSession) {
+        next(new Error('401'));
+    } else {
+        jwt.verify(userSession, 'dcjscomp602', (err, decoded) => {
+            if (err) {
+                next(new Error('500'));
+            } else if (decoded.data.Account_ID.toString() !== req.params.id) {
+                next(new Error('401'));
+            } else {
+                res.render('new_listing.ejs'); // Render the the HTML from the EJS template
+            }
+        });
+    }
 });
 
 // Respond to the browsers 'post' to URL '/new_listing' request by saving a new listing
-router.post('/new_listing', (req, res, next) => { // Make sure this URL matches the one in the ejs template in the form
-    const listing = { // Create a listing object corresponding to 'Service' table in db
-        Profile_ID: getUser(),
-        Title: req.body.listingTitle, // Get form data from the body of the post request
-        Description: req.body.listingDescription,
-        Location: req.body.listingLocation,
-        Category: req.body.listingCategory,
-    };
-
-    const insertService = 'INSERT INTO Service SET ?'; // Start insert statement
-    // Complete insert statement within query using listing object
-    connection.query(insertService, listing, (err, results) => {
-        if (err) {
-            next(err);
-        } else {
-            req.files.forEach((file) => { // Iterate though each image file uploaded in the post request
-                const data = new Buffer.from(file.buffer, 'base64', (err2) => { // Read the encoded data into binary
-                    if (err2) next(err2);
-                });
-
-                const image = { // Create image object corresponding to 'Photo' table
-                    Photo_Blob: data,
-                    Extension: file.originalname.substring(file.originalname.lastIndexOf('.') + 1, file.originalname.length),
-                    Profile_ID: listing.Profile_ID,
-                    Service_ID: results.insertId,
+router.post('/new_listing/:id', (req, res, next) => { // Make sure this URL matches the one in the ejs template in the form
+    const userSession = req.cookies.SessionInfo;
+    if (isNaN(req.params.id)) {
+        next(new Error('404'));
+    } else if (!userSession) {
+        next(new Error('401'));
+    } else {
+        jwt.verify(userSession, 'dcjscomp602', (err, decoded) => {
+            if (err) {
+                next(new Error('500'));
+            } else if (decoded.data.Account_ID.toString() !== req.params.id) {
+                next(new Error('401'));
+            } else {
+                const listing = { // Create a listing object corresponding to 'Service' table in db
+                    Profile_ID: req.params.id,
+                    Title: req.body.listingTitle, // Get form data from the body of the post request
+                    Description: req.body.listingDescription,
+                    Location: req.body.listingLocation,
+                    Category: req.body.listingCategory,
                 };
 
-                // Insert images
-                const insertImage = 'INSERT INTO Photo SET ?';
-                connection.query(insertImage, image, (err2) => {
-                    if (err2) next(err2);
+                const insertService = 'INSERT INTO Service SET ?'; // Start insert statement
+                // Complete insert statement within query using listing object
+                connection.query(insertService, listing, (err2, results) => {
+                    if (err2) {
+                        next(err2);
+                    } else {
+                        req.files.forEach((file) => { // Iterate though each image file uploaded in the post request
+                            const data = new Buffer.from(file.buffer, 'base64', (err3) => { // Read the encoded data into binary
+                                if (err3) next(err3);
+                            });
+
+                            const image = { // Create image object corresponding to 'Photo' table
+                                Photo_Blob: data,
+                                Extension: file.originalname.substring(file.originalname.lastIndexOf('.') + 1, file.originalname.length),
+                                Profile_ID: listing.Profile_ID,
+                                Service_ID: results.insertId,
+                            };
+
+                            // Insert images
+                            const insertImage = 'INSERT INTO Photo SET ?';
+                            connection.query(insertImage, image, (err4) => {
+                                if (err4) next(err4);
+                            });
+                        });
+                        res.end(`Saved /listing/${results.insertId}`); // Send saved response
+                    }
                 });
-            });
-            res.end(`Saved /listing/${results.insertId}`); // Send saved response
-        }
-    });
-    // Respond to the request by displaying the new lisitng
-    // res.render('listing.ejs', listing);
+            // Respond to the request by displaying the new lisitng
+            // res.render('listing.ejs', listing);
+            }
+        });
+    }
 });
 
 // Respond to the browsers 'get' for URL '/listing/id/edit'
