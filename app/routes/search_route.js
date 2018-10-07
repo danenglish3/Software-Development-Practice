@@ -114,6 +114,10 @@ function renderSearchPage(req, res, next) {
                         imageFile: 21, // Create empty array for holding filenames for the images
                         profileid: service.Profile_ID,
                     };
+                    if (singleListing.description.length > 50) {
+                        singleListing.description = singleListing.description.slice(0, 50);
+                        singleListing.description += '. Click Profile to read more.';
+                    }
                     results4.forEach((element) => { // For each result of the photo query (results3):
                         const filename = `${uuid()}.${element.Extension}`; // Create a filename
                         singleListing.imageFile = filename; // Add filename to array in singleListing object
