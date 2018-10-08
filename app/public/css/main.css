@@ -19,6 +19,10 @@ footer {
    text-align: center;
 }
 
+.form-center {
+    margin: 0 auto;
+    float: none;
+}
 .third {
     width: 33%;
     height: 60px; /* Set the fixed height of the footer here */

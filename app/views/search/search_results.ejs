@@ -15,7 +15,7 @@
     <% if(listingResults.length > 0) {
     var count = 0; %>
     <div class="container-fluid">
-        <table class="table text-centered">
+        <table class="table">
             <% for(var i=0; i < Math.ceil(listingResults.length/3); i++) { %>
             <tr>
                 <% for(var j=0; j < 3; j++) { %>
@@ -31,18 +31,19 @@
                             <div class="card-text">
                                 <%= listingResults[count].singleListing.location %>
                             </div>
-                            <p class="card-text">
+                            <p class="card-text mt-auto">
                                 <%= listingResults[count].singleListing.description %>
-                            </p>
-                            <form method="get" action="/profile/<%= listingResults[count].singleListing.profileid %>"
-                                enctype="multipart/form-data" id="selectProfile">
-                                <input class="btn-hover" type="submit" value="Go to Profile &rarr;">
-                            </form>
-                            <p></p>
-                            <form method="get" action="/new_quote/<%= listingResults[count].singleListing.serviceid %>"
-                                enctype="multipart/form-data" id="newQuote">
-                                <input type="submit" value="Request a Quote">
-                            </form>
+                            </p>                        
+                        </div>
+                        <div> 
+                                <div class="text-center">
+                                    <a class="btn btn-sm btn-primary" href="/profile/<%= listingResults[count].singleListing.profileid %>">Go to
+                                        Profile</a>
+                                </div>
+                                <p></p>
+                                <div class="text-center">
+                                    <a class="btn btn-sm btn-primary" href="/new_quote/<%= listingResults[count].singleListing.serviceid %>">Request a Quote</a>
+                                </div>
                         </div>
                         <div class="card-footer text-muted"></div>
                     </div>
