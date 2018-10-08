@@ -11,6 +11,20 @@ footer {
     position: absolute;
     bottom: 0;
     width: 100%;
+    height: 60px;
+    line-height: 60px;
+}
+
+.center {
+   text-align: center;
+}
+
+.form-center {
+    margin: 0 auto;
+    float: none;
+}
+.third {
+    width: 33%;
     height: 60px; /* Set the fixed height of the footer here */
     line-height: 60px; /* Vertically center the text there */
 }
@@ -31,4 +45,11 @@ input[type="file"] {
 -------------------------------------------------- */
 .preserve-line-breaks {
     white-space: pre-line;
+}
+
+.table {
+    border-radius: 5px;
+    width: 50%;
+  margin: auto;
+    float: none;
 }

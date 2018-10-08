@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <% include ../partials/head %>
+</head>
+
+<body>
+    <header>
+        <% include ../partials/header %>
+    </header>
+    <div class="center">
+        <h1><b>Search Results</b></h1>
+    </div>
+    <% if(listingResults.length > 0) {
+    var count = 0; %>
+    <div class="container-fluid">
+        <table class="table">
+            <% for(var i=0; i < Math.ceil(listingResults.length/3); i++) { %>
+            <tr>
+                <% for(var j=0; j < 3; j++) { %>
+                <% if(count < listingResults.length) { %>
+                <td>
+                    <div class="card" style="width: 20rem; height: 30rem;">
+                        <img class="card-img-top" src="/temp/<%= listingResults[count].singleListing.imageFile %>" alt="Service Image"
+                            height="200">
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                <%= listingResults[count].singleListing.name %>
+                            </h5>
+                            <div class="card-text">
+                                <%= listingResults[count].singleListing.location %>
+                            </div>
+                            <p class="card-text mt-auto">
+                                <%= listingResults[count].singleListing.description %>
+                            </p>                        
+                        </div>
+                        <div> 
+                                <div class="text-center">
+                                    <a class="btn btn-sm btn-primary" href="/profile/<%= listingResults[count].singleListing.profileid %>">Go to
+                                        Profile</a>
+                                </div>
+                                <p></p>
+                                <div class="text-center">
+                                    <a class="btn btn-sm btn-primary" href="/new_quote/<%= listingResults[count].singleListing.serviceid %>">Request a Quote</a>
+                                </div>
+                        </div>
+                        <div class="card-footer text-muted"></div>
+                    </div>
+                </td>
+                <% } %>
+                <% count++ } %>
+            </tr>
+            <% } %>
+        </table>
+    </div>
+    <% } else{ %>
+    <h1>Unable to find anything with that criteria, Please try again!</h1>
+    <% } %>
+
+    <form method="get" action="/search" enctype="multipart/form-data" id="backToSearch">
+        <input type="submit" value="Back to search">
+    </form>
+
+    <footer class="footer">
+        <% include ../partials/footer %>
+    </footer>
+</body>
+
+</html>

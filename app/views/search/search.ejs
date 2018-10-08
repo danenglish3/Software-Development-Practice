@@ -1,17 +1,13 @@
 <!DOCTYPE html>
 <html>
-
 <head>
-    <meta charset="utf-8" />
-    <title>Search</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" type="text/css" media="screen" href="../public/css/main.css" />
-    <script src="../public/js/main.js"></script>
+    <% include ../partials/head %>
 </head>
-
 <body>    
-
-        <h1>New Search</h1>
+    <header>
+        <% include ../partials/header %>
+    </header>
+    <h1>New Search</h1>
     <!--Upon Submitting the form, make a request with the post method to /search-->
     <form method="post" action="/search" enctype="multipart/form-data" id="newSearchForm">
         <label>Keyword</label>
@@ -40,6 +36,8 @@
         <br>
         <input type="submit" value="Submit">
     </form>
+    <footer class="footer">
+        <% include ../partials/footer %>
+</footer>
 </body>
-
 </html>
