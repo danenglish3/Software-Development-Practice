@@ -86,4 +86,9 @@ router.post('/register', (req, res, next) => {
     });
 });
 
+router.post('/logout', (req, res) => {
+    res.clearCookie('SessionInfo');
+    res.redirect('/');
+});
+
 module.exports = router;
