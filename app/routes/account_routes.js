@@ -37,7 +37,7 @@ router.get('/account/:id', (req, res, next) => {
                             password: results[0].Password,
                         };
                         // Serve the page using values from account for template
-                        res.render('account.ejs', account);
+                        res.render('account/account.ejs', account);
                     }
                 });
             }
@@ -77,7 +77,7 @@ router.get('/account/:id/edit', (req, res, next) => {
                             prevPword: results[0].Password,
                         };
                         // Render page using information stored in account
-                        res.render('edit_account.ejs', account);
+                        res.render('account/edit_account.ejs', account);
                     }
                 });
             }
@@ -148,7 +148,7 @@ router.get('/change_password/:id', (req, res, next) => {
                     } else {
                         results[0].id = req.params.id;
                         // Render page using ID from the account
-                        res.render('change_password.ejs', results[0]);
+                        res.render('account/change_password.ejs', results[0]);
                     }
                 });
             }
