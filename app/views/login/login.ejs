@@ -8,13 +8,19 @@
         <% include ../partials/header %>
     </header>
     <div style = "display: -ms-flexbox; display: flex; -ms-flex-align: center;align-items: center;padding-top: 40px;">
-        <form class = "form-signin" id = "login_form" method = "POST">
+        <form class = "form-signin" id = "login_form" method = "POST" action = "/login">
             <h1 class ="h3 mb-3 font-weight-normal">Sign in!</h1>
             <label for = "emailInput" class = "sr-only">Email</label>
-            <input id = "emailInput" type = "text" name = "loginEmail" class = "form-control" placeholder="Email" required autofocus>
+            <input id = "emailInput" type = "text" name = "loginEmail" class = "form-control" placeholder="Email">
             <label for = "passwordInput" class = "sr-only">Password</label>
-            <input id = "passwordInput" type = "password" name = "loginPass" class = "form-control" placeholder="Password" required>
-            <button class = "btn btn-lg btn-primary btn-block" type = "submit">Sign in</button>
+            <input id = "passwordInput" type = "password" name = "loginPass" class = "form-control" placeholder="Password">
+            <div class = "button-box col-lg-12">
+                <button class = "btn btn-lg btn-primary btn-block" type = "submit">Sign in</button>
+            
+                <form id = "registerButton" method = "GET" action = "/register">
+                    <button class = "btn btn-lg btn-primary btn-block" type = "submit">Register</button>
+                </form>
+            </div>
         </form>
     </div>
         <footer>

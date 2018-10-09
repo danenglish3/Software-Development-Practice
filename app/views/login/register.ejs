@@ -2,31 +2,45 @@
 <html>
 
 <head>
-    <meta charset="utf-8" />
-    <title>Register</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" type="text/css" media="screen" href="../public/css/main.css" />
-    <script src="../public/js/main.js"></script>
+    <% include ../partials/head %>
 </head>
 <body>
-    <h1>Register</h1>
-    <form method = "POST" action = "/register" enctype="multipart/form-data" id = "registerForm">
-        <label>Email</label>
-        <br>
-        <input type = "text" name = "registerEmail">
-        <br>
-        <label>Name</label>
-        <br>
-        <input type = "text"  name = "registerName">
-        <br>
-        <label>Password</label>
-        <br>
-        <input type = "text" name = "registerPassword">
-        <br>
-        <input type = "submit" value = "Register">
-    </form> 
+    <header>
+        <% include ../partials/header %>
+    </header>
+            <form class = "form-signin" method = "POST" action = "/register" enctype= "multipart/form-data" id = "registerForm">
+                <div id = "registerForm" class = "row jumbotron ">
+                    <div class = "form-group">
+                        <label for = "registerName">Name</label>
+                        <input type = "text" class = "form-control" placeholder = "Name" required>
+                    </div>
 
-    <form method = "GET" action = "/" enctype="multipart/form-data">
-        <input type = "submit" value = "Cancel">
-    </form>
+                    <div class = "form-group">
+                        <label for = "registerEmail">Email</label>
+                        <input type = "email" class = "form-control" placeholder="Email" required>
+                    </div>
+
+                    <div class = "form-group">
+                        <label for = "registerPassword">Password</label>
+                        <input type = "password" class = "form-control" placeholder = "Email" required>
+                    </div>
+                    <div class = "container">
+                        <div class = "row">
+                            <div class = "col">
+                                <form id = "registerButton" method = "POST" action = "/register">
+                                    <button class = "btn btn-lg btn-primary btn-block" type = "submit">Register</button>
+                                </form>
+
+                                <form style = "padding-top: 10px;" method = "GET" action = "/" enctype="multipart/form-data">
+                                    <button class = "btn btn-lg btn-primary btn-block" type = "submit">Cancel</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+    </div>
+    <footer>
+        <% include ../partials/footer %>
+    </footer>
 </body>
