@@ -8,7 +8,11 @@ const secretKey = 'dcjscomp602';
 
 // Serve the get request with the login.ejs page
 router.get('/login', (req, res) => {
-    res.render('login/login.ejs');
+    const sessionInfo = {
+        session: null,
+        page: 'Login',
+    };
+    res.render('login/login.ejs', sessionInfo);
 });
 
 // Create POST request to serve when Login button clicked
@@ -58,7 +62,11 @@ router.post('/login', (req, res, next) => {
 });
 
 router.get('/register', (req, res) => {
-    res.render('login/register.ejs');
+    const sessionInfo = {
+        session: null,
+        page: 'Register',
+    };
+    res.render('login/register.ejs', sessionInfo);
 });
 
 router.post('/register', (req, res, next) => {

@@ -3,26 +3,22 @@
 <head>
     <% include ../partials/head %>
 </head>
-<body>
+<body class = "text-center">
     <header>
         <% include ../partials/header %>
     </header>
-    <div class = "login-menu">
-        <form id = "login_form" method = "POST">
-            Email:<br>
-            <input id = "email_input" type = "text" name = "loginEmail"><br>
-            Password:<br>
-            <input id = "password_input" type = "password" name = "loginPass"<br>
-            <input type = "submit" value = "Login">
+    <div style = "display: -ms-flexbox; display: flex; -ms-flex-align: center;align-items: center;padding-top: 40px;">
+        <form class = "form-signin" id = "login_form" method = "POST">
+            <h1 class ="h3 mb-3 font-weight-normal">Sign in!</h1>
+            <label for = "emailInput" class = "sr-only">Email</label>
+            <input id = "emailInput" type = "text" name = "loginEmail" class = "form-control" placeholder="Email" required autofocus>
+            <label for = "passwordInput" class = "sr-only">Password</label>
+            <input id = "passwordInput" type = "password" name = "loginPass" class = "form-control" placeholder="Password" required>
+            <button class = "btn btn-lg btn-primary btn-block" type = "submit">Sign in</button>
         </form>
-
-
-        <form method = "GET" action = "/register">
-            <input type = "submit" value = "Register">
-        </form>
+    </div>
         <footer>
             <% include ../partials/footer %>
         </footer>
-    </div>
 </body>
 </html>

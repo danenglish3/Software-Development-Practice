@@ -35,6 +35,8 @@ router.get('/account/:id', (req, res, next) => {
                             name: results[0].Name,
                             email: results[0].Email,
                             password: results[0].Password,
+                            session: decoded.data,
+                            page: 'Account',
                         };
                         // Serve the page using values from account for template
                         res.render('account/account.ejs', account);
@@ -75,6 +77,8 @@ router.get('/account/:id/edit', (req, res, next) => {
                             prevName: results[0].Name,
                             prevEmail: results[0].Email,
                             prevPword: results[0].Password,
+                            session: decoded.data,
+                            page: 'Edit Account',
                         };
                         // Render page using information stored in account
                         res.render('account/edit_account.ejs', account);
@@ -147,6 +151,8 @@ router.get('/change_password/:id', (req, res, next) => {
                         next(new Error('404'));
                     } else {
                         results[0].id = req.params.id;
+                        results[0].session = decoded.data;
+                        results[0].page = 'Change Password';
                         // Render page using ID from the account
                         res.render('account/change_password.ejs', results[0]);
                     }
