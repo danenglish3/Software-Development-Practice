@@ -3,6 +3,7 @@ const session = require('express-session');// Used to save data between function
 const express = require('express');
 const fs = require('fs');
 const uuid = require('uuid/v4');
+const jwt = require('jsonwebtoken');
 const connection = require('../database');
 
 const router = express.Router(); // Get express's router functions
@@ -104,14 +105,12 @@ function renderSearchPage(req, res, next) {
                 } else {
                     // Create a singleListing object that holds the information required
                     const singleListing = {
-                        session: null,
-                        editable: false,
                         serviceid: service.Service_ID,
                         name: service.Title,
                         location: service.Location,
                         category: service.Category,
                         description: service.Description,
-                        imageFile: 21, // Create empty array for holding filenames for the images
+                        imageFile: 'no_img.png', // Create empty array for holding filenames for the images
                         profileid: service.Profile_ID,
                     };
                     // IF description is longer than 50 chars, cut down and add info to click
@@ -127,7 +126,7 @@ function renderSearchPage(req, res, next) {
                             if (err5) throw err5;
                         });
                     });
-                    listingResults.push({ singleListing }); // Push completed lising into final array
+                    listingResults.push(singleListing); // Push completed lising into final array
                     count += 1; // update count
                     if (count === req.services.length) { // Once all the services has been looped through and added
                         req.session.serviceResults = listingResults; // Save listing results to be used by next function
@@ -147,10 +146,25 @@ function renderSearchPage(req, res, next) {
 router.post('/search', findServices, renderSearchPage, (req, res) => {});
 // This is used to render a new search results page after geting all the results
 
-router.get('/search/results', (req, res) => {
-    const listingResults = req.session.serviceResults; // Results saved in previous function
-    // console.log('search/results', listingResults);
-    res.render('search/search_results.ejs', { listingResults, session: null }); // Render the new page
+router.get('/search/results', (req, res, next) => {
+    const results = {
+        session: null,
+        listingResults: req.session.serviceResults,
+    };
+    const userSession = req.cookies.SessionInfo;
+    if (!userSession) { // Check if user Session information is currently stored in browser
+        res.render('search/search_results.ejs', results);
+    } else {
+        jwt.verify(userSession, 'dcjscomp602', (err, decoded) => {
+            if (err) {
+                next(err);
+            } else {
+                results.session = decoded.data;
+                // Render the the HTML from the EJS template
+                res.render('listing/new_listing', results);
+            }
+        });
+    }
 });
 
 // Allow the router object to be used in other js files.
