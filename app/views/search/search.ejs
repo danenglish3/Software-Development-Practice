@@ -7,35 +7,57 @@
     <header>
         <% include ../partials/header %>
     </header>
-    <h1>New Search</h1>
+
+    <div class="container mt-4">
+        <div class="jumbotron">
+            <div class="row">
+                <h1 class="col text-center">New Search</h1>
+            </div>
+            <div class="row"> 
+                <div class="col text-center">
+                    <form method="post" action="/search" enctype="multipart/form-data" id="newSearchForm">
+                        <div>
+                            <h4>Keyword</h4>
+                        </div>
+                        <div>
+                            <input type="text" name="searchKeyword">
+                        </div>
+                        <div>
+                            <h4>Location</h4>   
+                        </div>                        
+                        <div>
+                            <select name="searchLocation">
+                                <option value="Default">Default</option>
+                                <option value="Auckland">Auckland</option>
+                                <option value="Wellington">Wellington</option>
+                                <option value="Christchurch">Christchurch</option>
+                                <option value="Test">Test</option>
+                            </select>                            
+                        </div>
+                        <div>
+                            <h4>Catergory</h4>
+                        </div>
+                        <div>
+                            <select name="searchCategory">
+                                <option value="Default">Default</option>
+                                <option value="Landscaping">Landscaping</option>
+                                <option value="Construction">Construction</option>
+                                <option value="Automotive">Automotive</option>
+                                <option value="Test">Test</option>
+                            </select>                           
+                        </div>
+                        <div>
+                            <p></p>
+                            <input type="submit" value="Submit">
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+    </div>
     <!--Upon Submitting the form, make a request with the post method to /search-->
-    <form method="post" action="/search" enctype="multipart/form-data" id="newSearchForm">
-        <label>Keyword</label>
-        <br>
-        <input type ="text" name="searchKeyword">
-        <br>
-        <label>Location</label>
-        <br>
-        <select name="searchLocation">
-                <option value="Default">Default</option>
-                <option value="Auckland">Auckland</option>
-                <option value="Wellington">Wellington</option>
-                <option value="Christchurch">Christchurch</option>
-                <option value="Test">Test</option>
-              </select>
-        <br>
-        <label>Catergory</label>
-        <br>
-        <select name="searchCategory">
-                <option value="Default">Default</option>
-                <option value="Landscaping">Landscaping</option>
-                <option value="Construction">Construction</option>
-                <option value="Automotive">Automotive</option>
-                <option value="Test">Test</option>
-              </select>        
-        <br>
-        <input type="submit" value="Submit">
-    </form>
+
     <footer class="footer">
         <% include ../partials/footer %>
 </footer>
