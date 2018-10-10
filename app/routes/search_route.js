@@ -161,7 +161,7 @@ router.get('/search/results', (req, res, next) => {
             } else {
                 results.session = decoded.data;
                 // Render the the HTML from the EJS template
-                res.render('listing/new_listing', results);
+                res.render('search/search_results.ejs', results);
             }
         });
     }
