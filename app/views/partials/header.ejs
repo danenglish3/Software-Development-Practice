@@ -14,64 +14,59 @@
             <!-- Search Fields -->
             <ul class="navbar-nav mx-auto">
                 <li class="nav-item">
-                    <form class="form-inline my-2 my-lg-0">
-                        <input class="form-control mr-sm-2" type="search" placeholder="Keywords" aria-label="searchKeyword">
+                    <form class="form-inline my-2 my-lg-0" method="post" action="/search" enctype="multipart/form-data" id="newSearchForm">
+                        <input class="form-control mr-sm-2" name="searchKeyword" type="search" placeholder="Keywords" aria-label="searchKeyword">
                         <div class="dropdown mr-sm-2">
-                            <button class="btn btn-secondary dropdown-toggle" type="button" id="categorySearch" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                            Category
-                            <span class="caret"></span>
-                            </button>     
-                            <ul class="dropdown-menu" aria-labelledby="categorySearch">
-                              <li><a class="dropdown-item " href="#" data-value="landscaping">Landscaping</a></li>
-                              <li><a class="dropdown-item" href="#" data-value="construction">Construction</a></li>
-                              <li><a class="dropdown-item" href="#" data-value="automotive">Automotive</a></li>
-                            </ul>
+                            <select class="form-control" name="searchLocation">
+                                <option value="Default">Category</option>
+                                <option value="Auckland">Auckland</option>
+                                <option value="Wellington">Wellington</option>
+                                <option value="Christchurch">Christchurch</option>
+                            </select>
                         </div>
                         <div class="dropdown mr-sm-2">
-                            <button class="btn btn-secondary dropdown-toggle" type="button" id="locationSearch" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                              Location
-                            </button>
-                            <div class="dropdown-menu" aria-labelledby="locationSearch">
-                              <a class="dropdown-item" href="#">Auckland</a>
-                              <a class="dropdown-item" href="#">Wellington</a>
-                              <a class="dropdown-item" href="#">Christchurch</a>
-                            </div>
+                            <select class="form-control" name="searchCategory">
+                                <option value="Default">Location</option>
+                                <option value="Landscaping">Landscaping</option>
+                                <option value="Construction">Construction</option>
+                                <option value="Automotive">Automotive</option>
+                            </select>
                         </div>
-                        <a href="/search" class="btn btn-outline-success my-2 my-sm-0" type="submit" >Search</a>
+                        <input class="btn btn-outline-success my-2 my-sm-0" type="submit" value="Search">
                     </form>
                 </li>
             </ul>
             <!-- My Account Dropdown Menu -->
             <ul class="navbar-nav">
                 <%if (session === null){%>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
-                            aria-haspopup="true" aria-expanded="false">
-                            My Account
-                        </a>
-                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <a class="dropdown-item" href="/login">Log In</a>
-                            <a class="dropdown-item" href="/register">Register</a>
-                        </div>
-                    </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
+                        aria-haspopup="true" aria-expanded="false">
+                        My Account
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="/login">Log In</a>
+                        <a class="dropdown-item" href="/register">Register</a>
+                    </div>
+                </li>
                 <%} else {%>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
-                            aria-haspopup="true" aria-expanded="false">
-                            <%= session.Name %>
-                        </a>
-                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <a class="dropdown-item" href="/new_listing">New Service</a>
-                            <a class="dropdown-item" href="#">Saved</a>
-                            <div class="dropdown-divider"></div>
-                            <a class="dropdown-item" href="/profile/<%= session.Account_ID %>">Profile</a>
-                            <a class="dropdown-item" href="/account/<%= session.Account_ID %>">Account</a>
-                            <div class="dropdown-divider"></div>
-                            <form action="/logout" method="post">
-                                <input class="dropdown-item" type="submit" value="Logout">
-                            </form>
-                        </div>
-                    </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
+                        aria-haspopup="true" aria-expanded="false">
+                        <%= session.Name %>
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="/new_listing">New Service</a>
+                        <a class="dropdown-item" href="/saved">Saved</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="/profile/<%= session.Account_ID %>">Profile</a>
+                        <a class="dropdown-item" href="/account/<%= session.Account_ID %>">Account</a>
+                        <div class="dropdown-divider"></div>
+                        <form action="/logout" method="post">
+                            <input class="dropdown-item" type="submit" value="Logout">
+                        </form>
+                    </div>
+                </li>
                 <%}%>
             </ul>
         </div>
