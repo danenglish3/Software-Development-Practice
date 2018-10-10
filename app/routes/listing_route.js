@@ -3,6 +3,7 @@ const express = require('express');
 const fs = require('fs');
 const uuid = require('uuid/v4');
 const jwt = require('jsonwebtoken');
+const async = require('async');
 const connection = require('../database');
 
 /* Set up route for listing pages */
@@ -240,7 +241,6 @@ router.post('/edit_listing', (req, res, next) => {
     const userSession = req.cookies.SessionInfo;
     if (!userSession) { // Check if user Session information is currently stored in browser, must be handled before JWT.verify is called
         next(new Error('401'));
-        console.log('no session');
     } else {
         jwt.verify(userSession, 'dcjscomp602', (err, decoded) => {
             if (err) {
@@ -298,6 +298,106 @@ router.post('/edit_listing', (req, res, next) => {
                         res.redirect(`/listing/${req.body.listingID}`);
                     });
                 }
+            }
+        });
+    }
+});
+
+router.get('/saved', (req, res, next) => {
+    const userSession = req.cookies.SessionInfo;
+    if (!userSession) {
+        next(new Error('401'));
+    } else {
+        jwt.verify(userSession, 'dcjscomp602', (err, decoded) => {
+            if (err) {
+                next(err);
+            } else {
+                const getSaved = `SELECT * FROM Service INNER JOIN Saved ON Saved.Service_ID = Service.Service_ID WHERE Saved.Profile_ID = ${decoded.data.Account_ID}`;
+                connection.query(getSaved, (err2, results) => {
+                    if (err2) {
+                        next(err2);
+                    } else {
+                        const savedServices = {
+                            session: decoded.data,
+                            allListings: [],
+                        };
+                        if (!results.length) { // If there are no saved services to be displayed
+                            savedServices.allListings = null;
+                        } else { // If there are saved services to be displayed
+                            async.each(results, (service, callback) => {
+                                // Create a statement that will gather all the photos that are related to a aervice
+                                const queryPhotos = `SELECT * FROM Photo WHERE Photo_ID = ${service.MainPhotoID}`;
+                                connection.query(queryPhotos, (err3, results2) => {
+                                    if (err3) {
+                                        next(err3);
+                                    } else {
+                                        // Create a singleListing object that holds the information required
+                                        const singleListing = {
+                                            serviceid: service.Service_ID,
+                                            name: service.Title,
+                                            location: service.Location,
+                                            category: service.Category,
+                                            description: service.Description,
+                                            imageFile: null,
+                                            profileid: service.Profile_ID,
+                                        };
+
+                                        // If description is longer than 50 chars, cut down and add info to click
+                                        if (singleListing.description.length > 50) {
+                                            singleListing.description = singleListing.description.slice(0, 50);
+                                            singleListing.description += '. Click Profile to read more.';
+                                        }
+
+                                        if (results2[0] == null) {
+                                            singleListing.imageFile = 'no_img.png';
+                                        } else {
+                                            const filename = `${uuid()}.${results2[0].Extension}`; // Create a filename
+                                            singleListing.imageFile = filename; // Add filename to array in singleListing object
+                                            // Write the file to the temp directory
+                                            fs.writeFile(`app/public/temp/${filename}`, results2[0].Photo_Blob, (err5) => {
+                                                if (err5) next(err5);
+                                            });
+                                        }
+                                        savedServices.allListings.push(singleListing); // Push completed lising into final array
+                                        callback();
+                                    }
+                                });
+                            }, (err3) => {
+                                if (err3) {
+                                    next(err3);
+                                } else {
+                                    res.render('listing/saved_listings', savedServices);
+                                }
+                            });
+                        }
+                    }
+                });
+            }
+        });
+    }
+});
+
+router.post('/save', (req, res, next) => {
+    const userSession = req.cookies.SessionInfo;
+    if (!userSession) {
+        next(new Error('401'));
+    } else {
+        jwt.verify(userSession, 'dcjscomp602', (err, decoded) => {
+            if (err) {
+                next(err);
+            } else {
+                const save = {
+                    Profile_ID: decoded.data.Account_ID,
+                    Service_ID: req.body.serviceID,
+                };
+                const saveQuery = 'INSERT INTO Saved SET ?';
+                connection.query(saveQuery, save, (err2) => {
+                    if (err2) {
+                        next(err2);
+                    } else {
+                        res.end();
+                    }
+                });
             }
         });
     }

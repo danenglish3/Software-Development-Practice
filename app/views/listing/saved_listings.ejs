@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <% include ../partials/head %>
+</head>
+
+<body>
+    <header>
+        <% include ../partials/header %>
+    </header>
+    <div class="container mt-4">
+        <h1 class="display-4">Saved Services</h1>
+        <hr>
+        <div class="card-columns">
+            <% for(var i = 0; i < allListings.length; i++) { %>
+            <div class="card">
+                <img class="card-img-top" src="/temp/<%= allListings[i].imageFile %>" alt="Card image cap">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <%= allListings[i].name %>
+                    </h5>
+                    <h6 class="card-subtitle mb-2 text-muted">
+                        <%= allListings[i].location %>
+                    </h6>
+                    <p class="card-text">
+                        <%= allListings[i].description %>
+                    </p>
+                    <a href="/listing/<%= allListings[i].serviceid %>" class="card-link">Go to Listing</a>
+                    <a href="/listing/<%= allListings[i].profileid %>" class="card-link">Go to Profile</a>
+                </div>
+            </div>
+            <%}%>
+        </div>
+
+    </div>
+    <footer>
+        <% include ../partials/footer %>
+    </footer>
+</body>
+
+</html>
