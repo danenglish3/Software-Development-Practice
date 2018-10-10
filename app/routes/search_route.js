@@ -77,7 +77,7 @@ function findServices(req, res, next) {
     }
     const sql = `SELECT * FROM website_user.Service WHERE ${conditionString}`; // SQL query for getting srvices
     connection.query(sql, (err, results) => {
-        if (err) {
+        if (err && !req.undefResults) {
             next(new Error('500'));
         } else {
             req.services = results; // Save service results in req to be used in next function
