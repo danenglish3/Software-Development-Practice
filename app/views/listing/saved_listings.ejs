@@ -10,24 +10,24 @@
         <% include ../partials/header %>
     </header>
     <div class="container mt-4">
-        <h1 class="display-4">Search Results</h1>
+        <h1 class="display-4">Saved Services</h1>
         <hr>
-        <div class="card-columns">
-            <% for(var i = 0; i < listingResults.length; i++) { %>
+        <div class="card-deck">
+            <% for(var i = 0; i < allListings.length; i++) { %>
             <div class="card">
-                <img class="card-img-top" src="/temp/<%= listingResults[i].imageFile %>" alt="Card image cap">
+                <img class="card-img-top" src="/temp/<%= allListings[i].imageFile %>" alt="Card image cap">
                 <div class="card-body">
                     <h5 class="card-title">
-                        <%= listingResults[i].name %>
+                        <%= allListings[i].name %>
                     </h5>
                     <h6 class="card-subtitle mb-2 text-muted">
-                        <%= listingResults[i].location %>
+                        <%= allListings[i].location %>
                     </h6>
                     <p class="card-text">
-                        <%= listingResults[i].description %>
+                        <%= allListings[i].description %>
                     </p>
-                    <a href="/listing/<%= listingResults[i].serviceid %>" class="card-link">Go to Listing</a>
-                    <a href="/listing/<%= listingResults[i].profileid %>" class="card-link">Go to Profile</a>
+                    <a href="/listing/<%= allListings[i].serviceid %>" class="card-link">Go to Listing</a>
+                    <a href="/listing/<%= allListings[i].profileid %>" class="card-link">Go to Profile</a>
                 </div>
             </div>
             <%}%>
