@@ -19,10 +19,17 @@
                         <%if (editable === true){%>
                         <a class="btn btn-outline-dark float-sm-right" href="/listing/<%= serviceid %>/edit">Edit</a>
                         <%} else if (session != null){%>
-                            <form class="float-sm-right" action="/save" method="post">
-                                <input type="hidden" name="serviceID" value="<%= serviceid %>">
-                                <input class="btn btn-outline-dark" type="submit" value="Save">
-                            </form>
+                            <% if (saved) {%>
+                                <form class="float-sm-right" action="/delete_save" method="post">
+                                    <input type="hidden" name="serviceID" value="<%= serviceid %>">
+                                    <input class="btn btn-outline-dark" type="submit" value="Unsave">
+                                </form>
+                            <%} else {%>
+                                <form class="float-sm-right" action="/save" method="post">
+                                    <input type="hidden" name="serviceID" value="<%= serviceid %>">
+                                    <input class="btn btn-outline-dark" type="submit" value="Save">
+                                </form>
+                            <%}%>
                         <%}%>
                     </h2>
                     <div class="card-body">
