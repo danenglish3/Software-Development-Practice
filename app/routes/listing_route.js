@@ -44,7 +44,7 @@ router.get('/listing/:id', (req, res, next) => {
                                 const listing = {
                                     session: null,
                                     editable: false,
-                                    page: results[0].Title,
+                                    saved: false,
                                     title: results[0].Title, // Use the information from the first query (results) to add the title
                                     serviceid: results[0].Service_ID,
                                     location: results[0].Location,
@@ -57,6 +57,15 @@ router.get('/listing/:id', (req, res, next) => {
                                     imageFiles: [], // Create empty array for holding filenames for the images
                                 };
 
+                                results3.forEach((element) => { // For each result of the photo query (results3):
+                                    const filename = `${uuid()}.${element.Extension}`; // Create a filename
+                                    listing.imageFiles.push(filename); // Add filename to array in listing object
+                                    // Write the file to the temp directory
+                                    fs.writeFile(`app/public/temp/${filename}`, element.Photo_Blob, (err4) => {
+                                        if (err4) next(err4);
+                                    });
+                                });
+
                                 // Check if owner of listing is logged in to enable editing
                                 const userSession = req.cookies.SessionInfo;
                                 if (userSession != null) {
@@ -68,19 +77,25 @@ router.get('/listing/:id', (req, res, next) => {
                                             if (decoded.data.Account_ID === results[0].Profile_ID) {
                                                 listing.editable = true;
                                             }
+                                            const checkSaved = `SELECT * FROM Saved WHERE Profile_ID = ${decoded.data.Account_ID} AND Service_ID = ${results[0].Service_ID}`;
+                                            connection.query(checkSaved, (err5, results4) => {
+                                                if (err5) {
+                                                    next(err5);
+                                                } else {
+                                                    if (results4.length) {
+                                                        if (results4[0].Service_ID === results[0].Service_ID) {
+                                                            listing.saved = true;
+                                                        }
+                                                    }
+                                                    res.render('listing/listing', listing);
+                                                }
+                                            });
                                         }
                                     });
+                                } else {
+                                    // Now that the listing object is complete, render the HTML using the information from the EJS template
+                                    res.render('listing/listing', listing);
                                 }
-                                results3.forEach((element) => { // For each result of the photo query (results3):
-                                    const filename = `${uuid()}.${element.Extension}`; // Create a filename
-                                    listing.imageFiles.push(filename); // Add filename to array in listing object
-                                    // Write the file to the temp directory
-                                    fs.writeFile(`app/public/temp/${filename}`, element.Photo_Blob, (err4) => {
-                                        if (err4) next(err4);
-                                    });
-                                });
-                                // Now that the listing object is complete, render the HTML using the information from the EJS template
-                                res.render('listing/listing', listing);
                             }
                         });
                     }
@@ -204,7 +219,6 @@ router.get('/listing/:id/edit', (req, res, next) => {
                             } else {
                                 const listing = {
                                     session: decoded.data,
-                                    page: `Editing ${results[0].Title}`,
                                     accountID: results[0].Profile_ID,
                                     listingID: results[0].Service_ID,
                                     prevTitle: results[0].Title, // Use the information from the first query (results) to add the title
@@ -220,8 +234,8 @@ router.get('/listing/:id/edit', (req, res, next) => {
                                     listing.imageFiles.push(filename); // Add filename to array in listing object
                                     listing.prevImages.push(element.Photo_ID);
                                     // Write the file to the temp directory
-                                    fs.writeFile(`app/public/temp/${filename}`, element.Photo_Blob, (err4) => {
-                                        if (err4) next(err4);
+                                    fs.writeFile(`app/public/temp/${filename}`, element.Photo_Blob, (err5) => {
+                                        if (err5) next(err5);
                                     });
                                 });
 
@@ -303,6 +317,7 @@ router.post('/edit_listing', (req, res, next) => {
     }
 });
 
+// Respond to the browsers 'get' request to URL '/saved' by displaying list of saved services
 router.get('/saved', (req, res, next) => {
     const userSession = req.cookies.SessionInfo;
     if (!userSession) {
@@ -377,6 +392,7 @@ router.get('/saved', (req, res, next) => {
     }
 });
 
+// Respond to the browsers 'post' request to URL '/save' by saving the service
 router.post('/save', (req, res, next) => {
     const userSession = req.cookies.SessionInfo;
     if (!userSession) {
@@ -395,7 +411,32 @@ router.post('/save', (req, res, next) => {
                     if (err2) {
                         next(err2);
                     } else {
-                        res.end();
+                        res.status(200);
+                        res.redirect(`/listing/${req.body.serviceID}`);
+                    }
+                });
+            }
+        });
+    }
+});
+
+// Respond to the browsers 'post' request to URL '/delete_save' by deleting the service
+router.post('/delete_save', (req, res, next) => {
+    const userSession = req.cookies.SessionInfo;
+    if (!userSession) {
+        next(new Error('401'));
+    } else {
+        jwt.verify(userSession, 'dcjscomp602', (err, decoded) => {
+            if (err) {
+                next(err);
+            } else {
+                const deleteSaved = `DELETE FROM Saved WHERE Profile_ID = ${decoded.data.Account_ID} AND Service_ID = ${req.body.serviceID}`;
+                connection.query(deleteSaved, (err2, results) => {
+                    if (err2) {
+                        next(err);
+                    } else {
+                        res.status(200);
+                        res.redirect(`/listing/${req.body.serviceID}`);
                     }
                 });
             }
