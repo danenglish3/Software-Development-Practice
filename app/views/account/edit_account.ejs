@@ -1,32 +1,35 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" type="text/css" media="screen" href="/css/main.css" />
-    <script src="/js/main.js"></script>
-    <title>Edit Account</title>
+    <% include ../partials/head %>
 </head>
 <body>
-    <form method = "POST" action = "/account/<%= id %>/edit" enctype = "multipart/form-data" id = "editAccountForm">
-    <label>Name</label>
-    <br>
-    <input type = "text" name = "accountName" value = "<%= prevName %>"">
-    <br>
-    <label>Password</label>
-    <label>Email</label>
-    <br>
-    <input type = "text" name = "accountEmail" value = "<%= prevEmail %>">
-    <br>
-    <input type = "submit" value = "Submit">
-    </form>
+    <header>
+        <% include ../partials/header %>
+    </header>
+    <div class = "jumbotron">
+        <div class = "col-md-6 align-self-center">
+            <div class = "row justify-content-center">
+                <label class = "sr-only">Name</label>
+                <input id = "accountName"  type = "text" name = "accountName" class = "form-control" placeholder= "Name">
+            </div>
 
-    <form method = "GET" action = "/change_password/<%= id %>">
-        <input type = "submit" value = "Change Password">
-    </form>
-    
-    <form method = "GET" action = "/account/<%= id %>">
-        <input type = "submit" value = "Cancel">
-    </form>
-    
+            <div class = "row align-items-center">
+                <label class = "sr-only">Email</label>
+                <input type = "email" name = "accountEmail" class = "form-control" placeholder = "Email" >
+            </div>
+
+            <a class = "btn btn-primary btn-outline-dark" href = "/change_password/<%= id %>">Change Password</a>
+            <div class = "row align-items-center">
+                <a class = "btn btn-primary btn-outline-dark" href = "/account/<%= id %>">Cancel</a>
+                <form method = "POST" action = "/account/<%= id %>/edit" enctype = "multipart/form-data" id = "editAccountForm">
+                    <button class = "btn btn-primary btn-outline-dark" type = "submit">Submit</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <footer>
+        <% include ../partials/footer %>
+    </footer>
 </body>
+</html>

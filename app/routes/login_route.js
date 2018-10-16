@@ -42,7 +42,7 @@ router.post('/login', (req, res, next) => {
                         if (err) {
                             next(new Error(500));
                         } else {
-                            res.cookie('SessionInfo', Token, { maxAge: 900000 });
+                            res.cookie('SessionInfo', Token, { maxAge: 9000000 });
                             res.status(200);
                             res.redirect('/');
                             res.end();
@@ -84,6 +84,7 @@ router.post('/register', (req, res, next) => {
         // Catch error if it's thrown on account creation
         if (error) {
             // respond with a code and message if error is thrown
+            console.log(error);
             next(new Error('500'));
         } else {
             // send response with successful code and message if user is created
