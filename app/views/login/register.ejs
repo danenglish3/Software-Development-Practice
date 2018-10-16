@@ -4,32 +4,35 @@
 <head>
     <% include ../partials/head %>
 </head>
+
 <body>
     <header>
         <% include ../partials/header %>
     </header>
-            <form class = "form-signin" method = "POST" action = "/register" enctype= "multipart/form-data" id = "registerForm">
-                <div id = "registerForm" class = "row align-items-center">
-                    <div class = "form-group">
-                        <label for = "registerName">Name</label>
-                        <input type = "text" class = "form-control" placeholder = "Name" name = "registerName">
-                    </div>
-
-                    <div class = "form-group">
-                        <label for = "registerEmail">Email</label>
-                        <input type = "email" class = "form-control" placeholder="Email" name = "registerEmail" >
-                    </div>
-
-                    <div class = "form-group">
-                        <label for = "registerPassword">Password</label>
-                        <input type = "password" class = "form-control" placeholder = "Password" name = "registerPassword" >
-                    </div>
-                        <div class = "col">
-                            <button class = "btn btn-lg btn-dark" type = "submit">Register</button>
-                            <a class = "btn btn-primary btn-outline-dark" href = "/">Cancel</a>
-                        </div>
+    <div class="container mt-5">
+        <form class="row justify-content-center" method="POST" action="/register" enctype="multipart/form-data" id="registerForm">
+            <div id="registerForm" class="col-sm-4">
+                <div class="form-group">
+                    <label for="registerName">Name</label>
+                    <input type="text" class="form-control" placeholder="Name" name="registerName">
                 </div>
-            </form>
+    
+                <div class="form-group">
+                    <label for="registerEmail">Email</label>
+                    <input type="email" class="form-control" placeholder="Email" name="registerEmail">
+                </div>
+    
+                <div class="form-group">
+                    <label for="registerPassword">Password</label>
+                    <input type="password" class="form-control" placeholder="Password" name="registerPassword">
+                </div>
+                <div class="form-group text-center">
+                    <button class="btn btn-dark" type="submit">Register</button>
+                    <a class="btn btn-primary btn-outline-dark" href="/">Cancel</a>
+                </div>
+            </div>
+        </form>
+    </div>
     <footer>
         <% include ../partials/footer %>
     </footer>
