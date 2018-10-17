@@ -1,30 +1,44 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <% include ../partials/head %>
 </head>
+
 <body>
     <header>
         <% include ../partials/header %>
     </header>
-    <div class = "jumbotron">
-        <div class = "col-md-6 align-self-center">
-            <div class = "row justify-content-center">
-                <label class = "sr-only">Name</label>
-                <input id = "accountName"  type = "text" name = "accountName" class = "form-control" placeholder= "Name">
-            </div>
 
-            <div class = "row align-items-center">
-                <label class = "sr-only">Email</label>
-                <input type = "email" name = "accountEmail" class = "form-control" placeholder = "Email" >
-            </div>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="card mt-5">
+                <div class="card-header">
+                    Edit my account
+                </div>
+                <div class="card-body">
+                    <form method="POST" action="/account/<%= id %>/edit">
+                        <div class="form-inline">
+                            <label class="font-weight-bold col-sm-4" for="editAccountName">Name: </label>
+                            <input class="form-control col-sm-8" type="text" name="accountName" id="editAccountName">
+                        </div>
 
-            <a class = "btn btn-primary btn-outline-dark" href = "/change_password/<%= id %>">Change Password</a>
-            <div class = "row align-items-center">
-                <a class = "btn btn-primary btn-outline-dark" href = "/account/<%= id %>">Cancel</a>
-                <form method = "POST" action = "/account/<%= id %>/edit" enctype = "multipart/form-data" id = "editAccountForm">
-                    <button class = "btn btn-primary btn-outline-dark" type = "submit">Submit</button>
-                </form>
+                        <div class="form-inline mt-1">
+                            <label class="font-weight-bold col-sm-4" for="editAccountEmail">Email: </label>
+                            <input class="form-control col-sm-8" type="email" name="accountEmail" id="editAccountEmail">
+                        </div>
+
+                        <div class="form-inline mt-2 mb-1">
+                            <label class="col-sm-4 font-weight-bold" for="editAccountPassword">Password: </label>
+                            <a href="/change_password/<%= id %>" class="col-sm-8">Change Password</a>
+                        </div>
+
+                        <div class="row justify-content-center mt-2">
+                            <button type="submit" class="mr-1 btn btn-primary btn-dark">Submit</button>
+                            <a href="/account/<%= id %>" class="btn btn-primary btn-outline-dark ">Cancel</a>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
@@ -32,4 +46,5 @@
         <% include ../partials/footer %>
     </footer>
 </body>
+
 </html>
