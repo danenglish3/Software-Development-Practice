@@ -24,7 +24,7 @@ router.post('/login', (req, res, next) => {
     };
 
     // Create SQL Query to search DB for a user with input Email
-    const loginQuery = `SELECT * FROM AccountHolder WHERE Email = '${loginUser.email}'`;
+    const loginQuery = `SELECT * FROM AccountHolder WHERE Email = '${loginUser.email.toLowerCase()}'`;
     // Store the results of the query in an array to be checked
     connection.query(loginQuery, (error, results) => {
         // Check if an error is thrown and log if so
@@ -72,7 +72,7 @@ router.get('/register', (req, res) => {
 router.post('/register', (req, res, next) => {
     // Getting registration information for post request from forms
     const user = {
-        email: req.body.registerEmail,
+        email: req.body.registerEmail.toLowerCase(),
         password: req.body.registerPassword,
         name: req.body.registerName,
     };

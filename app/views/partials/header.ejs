@@ -17,19 +17,19 @@
                     <form class="form-inline my-2 my-lg-0" method="post" action="/search" enctype="multipart/form-data" id="newSearchForm">
                         <input class="form-control mr-sm-2" name="searchKeyword" type="search" placeholder="Keywords" aria-label="searchKeyword">
                         <div class="dropdown mr-sm-2">
-                            <select class="form-control" name="searchLocation">
-                                <option value="Default">Category</option>
-                                <option value="Auckland">Auckland</option>
-                                <option value="Wellington">Wellington</option>
-                                <option value="Christchurch">Christchurch</option>
-                            </select>
-                        </div>
-                        <div class="dropdown mr-sm-2">
                             <select class="form-control" name="searchCategory">
-                                <option value="Default">Location</option>
+                                <option value="Default">Category</option>
                                 <option value="Landscaping">Landscaping</option>
                                 <option value="Construction">Construction</option>
                                 <option value="Automotive">Automotive</option>
+                            </select>
+                        </div>
+                        <div class="dropdown mr-sm-2">
+                            <select class="form-control" name="searchLocation">
+                                <option value="Default">Location</option>
+                                <option value="Auckland">Auckland</option>
+                                <option value="Wellington">Wellington</option>
+                                <option value="Christchurch">Christchurch</option>
                             </select>
                         </div>
                         <input class="btn btn-outline-success my-2 my-sm-0" type="submit" value="Search">
